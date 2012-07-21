@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:oauth="http://spring-security-oauth.codehaus.org/3.0"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security-3.0.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+        http://spring-security-oauth.codehaus.org/3.0 
+        http://spring-security-oauth.codehaus.org/schema/spring-security-oauth-3.0.xsd">
+
+	<!-- Scans the classpath of this application for @Components to deploy as beans -->
+	<context:component-scan base-package="com.welocally.geodb.services" />
+	<context:annotation-config />
+	
+	<!-- new annotation driven scheduling -->	
+	<task:annotation-driven executor="taskExecutor" scheduler="taskScheduler"/>
+	<task:executor id="taskExecutor" pool-size="5"/>
+	<task:scheduler id="taskScheduler" pool-size="10"/>
+
+	<!-- property placeholder -->
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>${geodb_core.properties}</value>
+			</list>			
+		</property>
+		<property name="systemPropertiesModeName">
+			<value>SYSTEM_PROPERTIES_MODE_OVERRIDE</value>
+		</property>
+	</bean>
+	
+	<bean id="jacksonMapper"  
+		class="org.codehaus.jackson.map.ObjectMapper" />
+		
+	 <!-- this bean must not be lazily initialized if the exporting is to happen -->
+	  <bean id="exporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
+	    <property name="beans">
+	      <map>
+	        <entry key="bean:name=indexMonitor1" value-ref="indexMonitor"/>
+	        <entry key="bean:name=loadMonitor1" value-ref="loadMonitor"/>
+	      </map>
+	    </property>
+	  </bean>
+	  
+<!--	   Manually start server after setting parent context. (init-method="start") -->
+<!--    <bean id="jettyServer"-->
+<!--          class="org.mortbay.jetty.Server"-->
+<!--          destroy-method="stop">  -->
+<!--        <property name="threadPool">-->
+<!--            <bean id="ThreadPool"-->
+<!--                  class="org.mortbay.thread.concurrent.ThreadPool">-->
+<!--                <constructor-arg value="0" />-->
+<!--            </bean>-->
+<!--        </property>-->
+<!--        <property name="connectors">-->
+<!--            <list>-->
+<!--                <bean id="Connector"-->
+<!--                      class="org.mortbay.jetty.nio.SelectChannelConnector"-->
+<!--                      p:port="8082"-->
+<!--                      p:maxIdleTime="30000"-->
+<!--                      p:acceptors="2"-->
+<!--                      p:confidentialPort="8443" />-->
+<!--            </list>-->
+<!--        </property>-->
+<!--        <property name="handlers">-->
+<!--            <list>-->
+<!--                <bean class="org.mortbay.jetty.servlet.Context"-->
+<!--                      p:contextPath="/geodb">  -->
+<!--                    <property name="sessionHandler">-->
+<!--                        <bean class="org.mortbay.jetty.servlet.SessionHandler" />-->
+<!--                    </property>-->
+<!--                    <property name="servletHandler">-->
+<!--                        <bean class="org.mortbay.jetty.servlet.ServletHandler">-->
+<!--                            <property name="servlets">-->
+<!--                                <list>-->
+<!--                                    <bean class="org.mortbay.jetty.servlet.ServletHolder"-->
+<!--                                          p:name="spring-ws">-->
+<!--                                        <property name="servlet">-->
+<!--                                            <bean class="org.springframework.ws.transport.http.MessageDispatcherServlet" />  -->
+<!--                                        </property>-->
+<!--                                        <property name="initParameters">-->
+<!--                                            <map>-->
+<!--                                                <entry key="contextConfigLocation" value="classpath:/spring-ws-embedded-context.xml" />  -->
+<!--                                            </map>-->
+<!--                                        </property>-->
+<!--                                    </bean>-->
+<!--                                </list>-->
+<!--                            </property>-->
+<!--                            <property name="servletMappings">-->
+<!--                                <list>-->
+<!--                                    <bean class="org.mortbay.jetty.servlet.ServletMapping"-->
+<!--                                          p:servletName="spring-ws"-->
+<!--                                          p:pathSpec="/*" />  -->
+<!--                                </list>-->
+<!--                            </property>-->
+<!--                        </bean>-->
+<!--                    </property>-->
+<!--                </bean>-->
+<!--                <bean class="org.mortbay.jetty.handler.DefaultHandler" />-->
+<!--                <bean class="org.mortbay.jetty.handler.RequestLogHandler" />-->
+<!--            </list>-->
+<!--        </property>-->
+<!--    </bean>-->
+
+</beans>
+

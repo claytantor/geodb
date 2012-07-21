@@ -1,0 +1,14 @@
+{
+    "properties": [
+        "log4j.config=/Users/claygraham/data/projects/configs/log4j.xml",
+        "geodb_core.properties=file:///Users/claygraham/data/projects/configs/geodb_core.properties",
+        "signpost4j.config=file:///Users/claygraham/data/projects/signpost4j/src/test/resources/example_signpost4j.properties"
+    ],
+    "bean": "dynamoLoader",
+    "command": {
+    	"type": "DEAL",
+        "collection": "dev.deals.published",
+        "file": "/Users/claygraham/data/tmp/deals.json",
+        "maxRecords": 3000
+    }
+}

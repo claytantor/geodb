@@ -1,0 +1,11 @@
+{
+    "properties": [
+        "log4j.config=/Users/claygraham/data/projects/configs/log4j.xml",
+        "geodb_core.properties=file:///Users/claygraham/data/projects/configs/geodb_core.properties",
+        "signpost4j.config=file:///Users/claygraham/data/projects/configs/signpost4j.properties"
+    ],
+    "bean": "signpostJsonSerializer",
+    "command": {
+    	"file": "/Users/claygraham/data/tmp/deals.json"
+    }
+}

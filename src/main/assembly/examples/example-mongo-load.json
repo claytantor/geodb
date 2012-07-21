@@ -1,0 +1,13 @@
+{
+    "properties": [
+        "log4j.config=/Users/claygraham/data/projects/configs/h-74-0-36-125.snfccasy.static.covad.net/tomcat/shared/geodb_log4j.xml"
+    ],
+    "bean": "mongoLoader",
+    "command": {
+        "host": "localhost",
+        "db": "geodb",
+        "collection": "places",
+        "file": "/data2/ec2-user/places_dump_20110628/places_dump_US.geojson",
+        "maxRecords": 100000000
+    }
+}

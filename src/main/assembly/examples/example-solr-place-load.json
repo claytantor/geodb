@@ -1,0 +1,13 @@
+{
+   "properties": [
+        "log4j.config=/Users/claygraham/data/projects/configs/log4j.xml",
+        "geodb_core.properties=file:///Users/claygraham/data/projects/configs/geodb_core.properties"
+    ],
+    "bean": "solrPlaceLoader",
+    "command": {
+        "endpoint": "http://localhost:8983/solr/update/json",
+        "file": "/Users/claygraham/data/places_dump_20110628/places_dump_US.geojson",
+        "maxRecords": 15000000,
+        "commitEvery": 1000
+    }
+}

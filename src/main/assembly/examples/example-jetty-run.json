@@ -1,0 +1,11 @@
+{
+    "properties": [
+        "log4j.config=/Users/claygraham/data/projects/configs/log4j.xml",
+        "geodb_core.properties=file:///Users/claygraham/data/projects/configs/geodb_core.properties",
+        "geodb_web.properties=file:///Users/claygraham/data/projects/configs/geodb_web.properties"
+    ],
+    "bean": "jettyServerStarter",
+    "command": {
+
+    }
+}
