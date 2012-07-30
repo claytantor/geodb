@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+        
+
+	<!-- Configures the @Controller programming model -->
+	<!-- the component scan for the controller is required for the dispatch model, since we
+	     load this as part of the filter it must be aware of the controllers -->
+	<context:component-scan base-package="com.welocally.geodb.web.mvc" />
+	<context:annotation-config />
+	<mvc:annotation-driven/>
+	
+	
+	<!-- just like the mvc config requires a local component scan for the controller
+    	the mvc config also requires a reference to the properties the controllers
+    	may use -->
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>${geodb_web.properties}</value>
+			</list>			
+		</property>
+	</bean>
+				
+	<!-- Configures Handler Interceptors -->	
+	<mvc:interceptors>
+		<!-- Changes the locale when a 'locale' request parameter is sent; e.g. /?locale=de -->
+		<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
+	</mvc:interceptors>
+
+	<!-- Saves a locale change using a cookie -->
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver" />
+	
+	<bean id="velocityConfigurer"
+		class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+		<property name="resourceLoaderPath">
+			<value>classpath:/vm/</value>
+		</property>
+	</bean>
+	
+    <!-- Application Message Bundle -->
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basename" value="/WEB-INF/messages/messages" />
+        <property name="cacheSeconds" value="0" />
+    </bean>
+
+	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="messageConverters">
+                <list>
+                		<bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
+				        <bean class="org.springframework.http.converter.FormHttpMessageConverter"/>
+				        <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
+				        <bean class="org.springframework.http.converter.xml.SourceHttpMessageConverter"/>
+				        <bean class="org.springframework.http.converter.BufferedImageHttpMessageConverter"/>
+                        <ref bean="jsonHttpMessageConverter"/>
+                </list>
+        </property>	
+	</bean>
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver">
+		<property name="messageConverters">
+                <list>
+                		<bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
+				        <bean class="org.springframework.http.converter.FormHttpMessageConverter"/>
+				        <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
+				        <bean class="org.springframework.http.converter.xml.SourceHttpMessageConverter"/>
+				        <bean class="org.springframework.http.converter.BufferedImageHttpMessageConverter"/>
+                        <ref bean="jsonHttpMessageConverter"/>
+                </list>
+        </property>		
+	</bean>
+	
+	<bean id="jsonHttpMessageConverter"  
+		class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+		<property name="objectMapper" ref="objectMapper"/>
+	</bean>
+	
+	<bean id="objectMapper"  
+		class="org.codehaus.jackson.map.ObjectMapper" />
+			
+	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver" p:order="1">
+		<property name="mediaTypes">
+			<map>
+				<entry key="json" value="application/json"/>
+				<entry key="txt" value="text/plain"/>
+			</map>
+		</property>
+		<property name="defaultViews">
+			<list>
+				<bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" />
+			</list>
+		</property>
+	    <property name="viewResolvers">
+	               <list>
+               			<!--  <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver" />-->
+                      	<bean class="com.welocally.geodb.web.resolver.ExtensionAwareBeanNameViewResolver" 
+                      		p:extension="json"/>
+                      	<bean class="com.welocally.geodb.web.resolver.ExtensionAwareBeanNameViewResolver" 
+                      		p:extension="txt"/>	
+                      	<!-- <bean class="com.sightlyinc.ratecred.web.MobileBeanNameViewResolver" 
+                      		p:mobileAgents="Android"/> -->
+                       	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+                               <property name="prefix" value="/WEB-INF/views/"/>
+                               <property name="suffix" value=".jsp"/>
+                       	</bean>
+	               </list>
+	       </property>	
+	</bean>		
+	
+	<bean id="mapper-result-json" 
+		class="org.springframework.web.servlet.view.velocity.VelocityView">
+		<property name="url" value="mapper-result-json.vm"/>
+		<property name="contentType" value="application/json"/>
+	</bean>	    
+    
+	
+</beans>
