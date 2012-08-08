@@ -31,7 +31,7 @@ public class EmbeddedServer {
 		    } ;
 		 
 		private static String contextPath = "/geodb";
-		private static String resourceBase = "src/main/webapp";
+		
 	/**
 	 * @param args
 	 */

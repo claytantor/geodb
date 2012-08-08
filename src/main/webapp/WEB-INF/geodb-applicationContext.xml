@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:oauth="http://spring-security-oauth.codehaus.org/3.0"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security-3.0.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+        http://spring-security-oauth.codehaus.org/3.0 
+        http://spring-security-oauth.codehaus.org/schema/spring-security-oauth-3.0.xsd">
+
+	<!-- Scans the classpath of this application for @Components to deploy as beans -->
+	<context:component-scan base-package="com.welocally.geodb.services" />
+	<context:component-scan base-package="com.welocally.signpost4j" />
+	<context:annotation-config />
+	
+	<!-- new annotation driven scheduling -->	
+	<task:annotation-driven executor="taskExecutor" scheduler="taskScheduler"/>
+	<task:executor id="taskExecutor" pool-size="5"/>
+	<task:scheduler id="taskScheduler" pool-size="10"/>
+
+	<!-- property placeholder -->
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>${geodb_core.properties}</value>
+				<value>${signpost4j.config}</value>
+			</list>			
+		</property>
+	</bean>
+	
+	<bean id="jacksonMapper"  
+		class="org.codehaus.jackson.map.ObjectMapper" />
+		
+		
+		
+
+</beans>
