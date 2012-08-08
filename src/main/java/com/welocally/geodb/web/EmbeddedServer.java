@@ -8,6 +8,7 @@ import org.eclipse.jetty.plus.jndi.Resource;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.context.ContextLoaderListener;
 
 /**
@@ -17,7 +18,6 @@ import org.springframework.web.context.ContextLoaderListener;
  */
 public class EmbeddedServer {
 	private static final int DEFAULT_HTTP_PORT = 8082;
-	private static final String WAR_LOCATION = "src/main/webapp";
 	private static Logger logger = Logger.getLogger(EmbeddedServer.class);
 
 	  private static String[] __dftConfigurationClasses =
@@ -46,9 +46,9 @@ public class EmbeddedServer {
 		WebAppContext webapp = new WebAppContext();
 		webapp.setConfigurationClasses(__dftConfigurationClasses);
  
-		webapp.setDescriptor("src/main/webapp/WEB-INF/web.xml");
 		webapp.setContextPath(contextPath);
-		webapp.setResourceBase(resourceBase);
+		String webDir = new ClassPathResource("webapp/").getURI().toString();
+		webapp.setResourceBase(webDir);
 		webapp.setClassLoader(Thread.currentThread().getContextClassLoader());
  
 		server.setHandler(webapp);
