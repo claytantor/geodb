@@ -79,7 +79,7 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 	@Autowired LoadMonitor loadMonitor;
 	
 
-	@Override
+	
 	public void doCommand(JSONObject command) throws CommandException {
 		try {			
 			loadMonitor.reset();
@@ -125,7 +125,7 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
 						new JSONObject(s);
 					
 					
-					welocallyJSONUtils.updatePlaceToWelocally(place);
+					welocallyJSONUtils.updatePlaceToWelocallyFormat(place);
 					loadSingle(place, count, commitEvery, sw, endpoint);
 					count++;
 					

@@ -35,7 +35,7 @@ public class SignpostJsonSerializer implements CommandSupport {
     @Value("${signpost.feed.path:/affiliate/1286/deals.xml}")
     private String dealsFeedEndpoint;
 
-    @Override
+    
     public void doCommand(JSONObject command) throws CommandException {
         try {
             logger.debug("get deals");

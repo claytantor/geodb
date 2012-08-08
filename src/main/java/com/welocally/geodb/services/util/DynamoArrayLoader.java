@@ -43,7 +43,7 @@ public class DynamoArrayLoader implements CommandSupport {
 	@Qualifier("dynamoJsonDatabase")
 	private JsonDatabase jsonDatabase;
 
-	@Override
+	
 	public void doCommand(JSONObject command) throws CommandException {
 		try {			
 			loadMonitor.reset();

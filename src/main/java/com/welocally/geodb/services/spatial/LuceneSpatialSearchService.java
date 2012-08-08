@@ -60,7 +60,7 @@ public class LuceneSpatialSearchService implements SpatialSearchService {
 	}
 	
 
-	@Override
+
     public JSONArray find(Point point, double km, String queryString, int start, int rows, String endpoint)
             throws SpatialSearchException {
 	    //return find(getPlaceSearcher(), point, km, queryString);

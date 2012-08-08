@@ -35,7 +35,7 @@ public class ElasticPlaceLoader implements CommandSupport {
     @Autowired LoadMonitor loadMonitor;
     
 
-    @Override
+    
     public void doCommand(JSONObject command) throws CommandException {
         try {           
             loadMonitor.reset();

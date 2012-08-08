@@ -18,7 +18,7 @@ public class WelocallyJSONUtils {
 	
 	@Autowired IdGen idGen; 
 	
-	public void updatePlaceToWelocally(JSONObject place) throws JSONException{
+	public void updatePlaceToWelocallyFormat(JSONObject place) throws JSONException{
 		place.put("_id", place.getString("id").replaceAll("SG_", "WL_"));
 		place.put("type", "Place");
 		place.remove("id");

@@ -45,7 +45,6 @@ public class LuceneNFSSpatialIndexService implements SpatialIndexService,Command
 	@Autowired WelocallyJSONUtils welocallyJSONUtils;
 
 
-	@Override
 	public void doCommand(JSONObject command) throws CommandException {
 		try {
 			indexMonitor.reset();
@@ -129,7 +128,7 @@ public class LuceneNFSSpatialIndexService implements SpatialIndexService,Command
 			JSONObject place = 
 				new JSONObject(str);
 			
-			welocallyJSONUtils.updatePlaceToWelocally(place);
+			welocallyJSONUtils.updatePlaceToWelocallyFormat(place);
 			
 			writer.addDocument(
 					spatialDocumentFactory.makePlaceDocument(place));
@@ -145,7 +144,6 @@ public class LuceneNFSSpatialIndexService implements SpatialIndexService,Command
 		logger.debug("finished indexing");
 	}
 
-	@Override
 	public void indexPlace(JSONObject place) throws SpatialIndexException {
 		throw new SpatialIndexException("NO IMPL");
 		

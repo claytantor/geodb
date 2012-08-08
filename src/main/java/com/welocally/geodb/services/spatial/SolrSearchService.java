@@ -27,7 +27,6 @@ public class SolrSearchService implements SpatialSearchService {
 //	private String endpoint;
 //		
 
-	@Override
 	//wt=json&fq={!geofilt%20sfield=location}&pt=58.37587201036513,-134.58542687818408&d=5
 	public JSONArray find(Point point, double km, String queryString, int start, int rows, String endpoint)
 	        throws SpatialSearchException {

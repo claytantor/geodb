@@ -5,6 +5,7 @@ import static org.elasticsearch.index.query.QueryBuilders.filteredQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -85,7 +86,9 @@ public class PlaceControllerV3 extends AbstractJsonController {
     @Value("${geodb.admin.password}")
     String adminPassword;
     
-        
+    @Value("${PlaceController.requireToken:true}")
+    Boolean requireToken;
+           
     @Autowired IdGen idGen; 
     
     @Autowired SpatialConversionUtils spatialConversionUtils; 
@@ -191,14 +194,17 @@ public class PlaceControllerV3 extends AbstractJsonController {
     
     
     @RequestMapping(value = "/public/save", method = RequestMethod.PUT)
-    public ModelAndView savePlacePublicPut(@RequestBody String requestJson, HttpServletRequest req){  
+    public ModelAndView savePlacePublicPut(
+            @RequestParam(required=true) String key, 
+            @RequestParam(required=true) String token, 
+            @RequestBody String requestJson, HttpServletRequest req){  
         
         ModelAndView  mav = new ModelAndView("mapper-result");
               
         try {
             
             //right now we are going to secure this with the claytantor account
-            JSONObject  admin =  checkPublisherKey(req);        
+            JSONObject  admin =  checkPublisherKey(key,token);        
             
             if(admin.getString("username").equals(adminUser) && 
                     admin.getString("password").equals(adminPassword) )
@@ -206,7 +212,7 @@ public class PlaceControllerV3 extends AbstractJsonController {
                 JSONObject place = 
                     new JSONObject(requestJson);
                 
-                savePlacePublic(place, mav, req);
+                savePlacePublic(key, token, place, mav, req);
                  
                  
             } else {
@@ -232,15 +238,17 @@ public class PlaceControllerV3 extends AbstractJsonController {
     }
     
     @RequestMapping(value = "/public/saveall", method = RequestMethod.PUT)
-    public ModelAndView savePlacesPublicPut(@RequestBody String requestJson, HttpServletRequest req){  
+    public ModelAndView savePlacesPublicPut(            
+            @RequestParam(required=true) String key, 
+            @RequestParam(required=true) String token, 
+            @RequestBody String requestJson, HttpServletRequest req){  
         
         ModelAndView  mav = new ModelAndView("mapper-result");
               
         try {
             
-
             //right now we are going to secure this with the claytantor account
-            JSONObject  admin =  checkPublisherKey(req);        
+            JSONObject  admin =  checkPublisherKey(key,token);        
             
             if(admin.getString("username").equals(adminUser) && 
                     admin.getString("password").equals(adminPassword) )
@@ -249,7 +257,7 @@ public class PlaceControllerV3 extends AbstractJsonController {
                     new JSONArray(requestJson);
                                
                 for (int i = 0; i < places.length(); i++) {
-                    savePlacePublic(places.getJSONObject(i), mav, req);
+                    savePlacePublic(key, token,places.getJSONObject(i), mav, req);
                 }   
                 
                 //override response
@@ -284,7 +292,11 @@ public class PlaceControllerV3 extends AbstractJsonController {
     }
     
     @RequestMapping(value = "/user/save", method = RequestMethod.PUT)
-    public ModelAndView savePlaceUserPut( @RequestParam (value="status", required=false) String status, @RequestBody String requestJson, HttpServletRequest req){  
+    public ModelAndView savePlaceUserPut( 
+            @RequestParam(required=true) String key, 
+            @RequestParam(required=true) String token, 
+            @RequestParam (value="status", required=false) String status, 
+            @RequestBody String requestJson, HttpServletRequest req){  
                                
         ModelAndView  mav = new ModelAndView("mapper-result");
               
@@ -296,7 +308,7 @@ public class PlaceControllerV3 extends AbstractJsonController {
             }
             
             
-            JSONObject  publisher = checkPublisherKey(req);  
+            JSONObject publisher = checkPublisherKey(key,token);
             
             JSONObject place = 
                 new JSONObject(requestJson);
@@ -323,7 +335,11 @@ public class PlaceControllerV3 extends AbstractJsonController {
     }
     
     @RequestMapping(value = "/user/save", method = RequestMethod.GET)
-    public ModelAndView saveUserPlaceJSONP(@RequestParam (value="status", required=false) String status,@RequestParam(required=false) String callback, HttpServletRequest req){
+    public ModelAndView saveUserPlaceJSONP(
+            @RequestParam(required=true) String key, 
+            @RequestParam(required=true) String token, 
+            @RequestParam (value="status", required=false) String status,
+            @RequestParam(required=false) String callback, HttpServletRequest req){
        
         ModelAndView mav = null;
         if(StringUtils.isEmpty(callback))
@@ -343,7 +359,8 @@ public class PlaceControllerV3 extends AbstractJsonController {
             }
             
             
-            JSONObject  publisher = checkPublisherKey(req); 
+            JSONObject publisher = checkPublisherKey(key,token);
+            
             JSONObject placeQueryString =
                 new JSONObject(req.getParameterMap());
             
@@ -384,8 +401,13 @@ public class PlaceControllerV3 extends AbstractJsonController {
     }
     
     @RequestMapping(value = "/user/search", method = RequestMethod.GET)
-    public ModelAndView searchUserIndex(@RequestParam String q, @RequestParam String loc,  
-            @RequestParam Double radiusKm, @RequestParam(required=false) String callback, HttpServletRequest req){
+    public ModelAndView searchUserIndex(
+            @RequestParam String q, 
+            @RequestParam String loc,  
+            @RequestParam Double radiusKm, 
+            @RequestParam(required=true) String key, 
+            @RequestParam(required=true) String token, 
+            @RequestParam(required=false) String callback, HttpServletRequest req){
         
         ModelAndView mav = null;
         if(StringUtils.isEmpty(callback))
@@ -399,7 +421,7 @@ public class PlaceControllerV3 extends AbstractJsonController {
                 
         try {
             
-            JSONObject publisher = checkPublisherKey(req);  
+            JSONObject publisher = checkPublisherKey(key,token); 
             
             String[] parts = loc.split("_");
 
@@ -437,12 +459,22 @@ public class PlaceControllerV3 extends AbstractJsonController {
     }   
  
     @RequestMapping(value = "/user/delete/{id}", method = RequestMethod.GET)
-    public ModelAndView deleteById(@PathVariable String id, @RequestParam(required=false) String callback, Model m, HttpServletRequest req){
-        return delete(  id, callback, m, req);
+    public ModelAndView deleteById(
+            @PathVariable String id, 
+            @RequestParam(required=true) String key, 
+            @RequestParam(required=true) String token, 
+            @RequestParam(required=false) String callback, 
+            Model m, HttpServletRequest req){
+        return delete(  id, key, token, callback, m, req);
     }
     
     @RequestMapping(value = "/user/{id}", method = RequestMethod.DELETE)
-    public ModelAndView delete(@PathVariable String id, String callback, Model m, HttpServletRequest req){
+    public ModelAndView delete(
+            @PathVariable String id, 
+            @RequestParam(required=true) String key, 
+            @RequestParam(required=true) String token,             
+            @RequestParam(required=false) String callback, 
+            Model m, HttpServletRequest req){
         ModelAndView mav = null;
         if(StringUtils.isEmpty(callback))
             mav = new ModelAndView("mapper-result");
@@ -454,7 +486,7 @@ public class PlaceControllerV3 extends AbstractJsonController {
         }
         
         try {
-            JSONObject publisher = checkPublisherKey(req);  
+            JSONObject publisher = checkPublisherKey(key,token);  
             
             //delete from the store
             jsonDatabase.delete(userPlacesCollection, id);
@@ -494,7 +526,11 @@ public class PlaceControllerV3 extends AbstractJsonController {
     
     
     @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
-    public ModelAndView getUserPlace(@PathVariable String id, @RequestParam(required=false) String callback, Model m, HttpServletRequest req){
+    public ModelAndView getUserPlace(
+            @PathVariable String id, 
+            @RequestParam(required=true) String key, 
+            @RequestParam(required=true) String token, 
+            @RequestParam(required=false) String callback, Model m, HttpServletRequest req){
         ModelAndView mav = null;
         if(StringUtils.isEmpty(callback))
             mav = new ModelAndView("mapper-result");
@@ -506,7 +542,7 @@ public class PlaceControllerV3 extends AbstractJsonController {
         }
         
         try {
-            JSONObject publisher = checkPublisherKey(req);  
+            JSONObject publisher = checkPublisherKey(key,token);   
             JSONArray places = new JSONArray();
             JSONObject place = jsonDatabase.findById(userPlacesCollection, id);
             places.put(place);
@@ -530,7 +566,12 @@ public class PlaceControllerV3 extends AbstractJsonController {
     }
     
     @RequestMapping(value = "/userplaces", method = RequestMethod.GET)
-    public ModelAndView getUserPlaces(@RequestParam(required=false) String callback, Model m, HttpServletRequest req){
+    public ModelAndView getUserPlaces(
+            @RequestParam(required=true) String key, 
+            @RequestParam(required=true) String token, 
+            @RequestParam(required=false) String callback, 
+            Model m, 
+            HttpServletRequest req){
        
         ModelAndView mav = null;
         if(StringUtils.isEmpty(callback))
@@ -543,7 +584,7 @@ public class PlaceControllerV3 extends AbstractJsonController {
         }
         
         try {
-            JSONObject publisher = checkPublisherKey(req);  
+            JSONObject publisher = checkPublisherKey(key,token);  
             
             JSONArray places = jsonDatabase.findUserPlaces(publisher.getString("username"), userPlacesCollection, "published");
                        
@@ -569,8 +610,15 @@ public class PlaceControllerV3 extends AbstractJsonController {
     
     
 //----------- private implementations ------------//    
-   private void savePlacePublic(JSONObject place, ModelAndView mav, HttpServletRequest req) throws DbException, JSONException, IOException, RuntimeException{      
-       JSONObject  publisher =  checkPublisherKey(req);
+   private void savePlacePublic(
+  
+           String key, 
+           String token, 
+           JSONObject place, 
+           ModelAndView mav, 
+           HttpServletRequest req) throws DbException, JSONException, IOException, RuntimeException{      
+       
+       JSONObject publisher = checkPublisherKey(key,token);
                       
         
         Point p = spatialConversionUtils.getJSONPoint(place);
@@ -685,12 +733,12 @@ public class PlaceControllerV3 extends AbstractJsonController {
         } 
     }
        
-    private JSONObject checkPublisherKey(HttpServletRequest req){
-        if(req.getHeader("key") != null){   
-            String publisherKey = req.getHeader("key");
+    private JSONObject checkPublisherKey(String key, String token){
+              
+        if(!StringUtils.isEmpty(key) && !StringUtils.isEmpty(token)){   
                       
             try {
-                return jsonDatabase.findById(usersCollection, publisherKey);
+                return jsonDatabase.findById(usersCollection, key);
             } catch (Exception e) {
                throw new RuntimeException(e);
             }  

@@ -29,20 +29,17 @@ import com.welocally.geodb.services.jmx.IndexMonitor;
 @Component
 public class LuceneMongoSpatialIndexService implements SpatialIndexService,CommandSupport  {
 
-    @Override
     public void doCommand(JSONObject command) throws CommandException {
         // TODO Auto-generated method stub
         throw new RuntimeException("NO IMPL");
     }
 
-    @Override
     public void index(String collectionName, int maxdocs)
             throws SpatialIndexException {
         // TODO Auto-generated method stub
         throw new RuntimeException("NO IMPL");
     }
 
-    @Override
     public void indexPlace(JSONObject place) throws SpatialIndexException {
         // TODO Auto-generated method stub
         throw new RuntimeException("NO IMPL");

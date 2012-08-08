@@ -79,7 +79,7 @@ public class SolrDealLoader implements CommandSupport, JsonStoreLoader {
 	@Autowired LoadMonitor loadMonitor;
 	
 
-	@Override
+	
 	public void doCommand(JSONObject command) throws CommandException {
 		try {			
 			loadMonitor.reset();

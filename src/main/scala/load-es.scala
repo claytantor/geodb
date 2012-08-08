@@ -30,7 +30,7 @@ object ESLoader {
     for(l <- readFile(filename)) yield new JSONObject(l)
 
   def makePlaceIndex(place :JSONObject) : JSONObject = {
-    wiredBean.welocallyJSONUtils.updatePlaceToWelocally(place)
+    wiredBean.welocallyJSONUtils.updatePlaceToWelocallyFormat(place)
     wiredBean.welocallyJSONUtils.makeIndexablePlace(place)
   }
 

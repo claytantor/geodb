@@ -35,7 +35,7 @@ public class DynamoPlaceLoader implements CommandSupport {
 	@Qualifier("dynamoJsonDatabase")
 	private JsonDatabase jsonDatabase;
 
-	@Override
+	
 	public void doCommand(JSONObject command) throws CommandException {
 		try {			
 			loadMonitor.reset();
@@ -68,7 +68,7 @@ public class DynamoPlaceLoader implements CommandSupport {
 					JSONObject place = 
 						new JSONObject(s);
 					
-					welocallyJSONUtils.updatePlaceToWelocally(place);
+					welocallyJSONUtils.updatePlaceToWelocallyFormat(place);
 					
 					logger.debug("adding document:"+place.getString("_id"));
 					jsonDatabase.put(place,collectionName, place.getString("_id"), JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);

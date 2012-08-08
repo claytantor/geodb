@@ -85,7 +85,7 @@ public class SolrCSVWriter implements CommandSupport {
 	@Qualifier("dynamoJsonDatabase")
 	private JsonDatabase jsonDatabase;
 
-	@Override
+	
 	public void doCommand(JSONObject command) throws CommandException {
 		try {			
 			loadMonitor.reset();
@@ -130,7 +130,7 @@ public class SolrCSVWriter implements CommandSupport {
 						new JSONObject(s);
 					
 					
-					welocallyJSONUtils.updatePlaceToWelocally(place);
+					welocallyJSONUtils.updatePlaceToWelocallyFormat(place);
 					JSONObject doc = welocallyJSONUtils.makeIndexablePlace(place);
 					csvWriter.writeNext(new String[] {
 						doc.getString("_id"),

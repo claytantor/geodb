@@ -91,21 +91,18 @@ public class DynamoJsonDatabase implements JsonDatabase {
 	}
 	
 
-	@Override
 	public DbPage findAll(String collectionName, int pageNum)
 	        throws DbException {
 		// TODO Auto-generated method stub
 		throw new RuntimeException("NO IMPL");
 	}
 
-	@Override
 	public DbPage findByExample(String collectionName, int pageNumber,
 	        JSONObject example) throws DbException {
 		// TODO Auto-generated method stub
 		throw new RuntimeException("NO IMPL");
 	}
 
-	@Override
 	public DbPage findByExampleIncluding(String collectionName, int pageNumber,
 	        JSONObject example, JSONObject inclusions) throws DbException {
 	    
@@ -134,7 +131,6 @@ public class DynamoJsonDatabase implements JsonDatabase {
 		throw new RuntimeException("NO IMPL");
 	}
 
-	@Override
 	public JSONObject findById(String collectionName, String id)
 	        throws DbException {
 
@@ -165,7 +161,6 @@ public class DynamoJsonDatabase implements JsonDatabase {
 	
 	
 
-	@Override
     public void delete(String collectionName, String id) throws DbException {
 	    try {
             Key primaryKey = new Key()
@@ -181,7 +176,6 @@ public class DynamoJsonDatabase implements JsonDatabase {
     }
 	
 
-    @Override
     public void deleteAll(String collectionName) throws DbException {
         
         
@@ -191,7 +185,6 @@ public class DynamoJsonDatabase implements JsonDatabase {
     
     
 
-    @Override
 	public JSONArray findDistinct(String collectionName, String key,
 	        JSONObject query) throws DbException {
 		// TODO Auto-generated method stub
@@ -285,7 +278,7 @@ public class DynamoJsonDatabase implements JsonDatabase {
 		return oArray;
 	}
 
-	@Override
+
 	public void put(JSONObject doc, String collectionName, String id, EntityType type, StatusType status)
 	        throws DbException {
 

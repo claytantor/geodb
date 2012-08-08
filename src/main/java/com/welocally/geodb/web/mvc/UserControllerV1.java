@@ -38,7 +38,7 @@ import com.welocally.geodb.services.util.WelocallyJSONUtils;
 public class UserControllerV1 extends AbstractJsonController {
     
     static Logger logger = 
-        Logger.getLogger(ESPlaceController.class);
+        Logger.getLogger(UserControllerV1.class);
         
     @Autowired 
     @Qualifier("dynamoJsonDatabase")
