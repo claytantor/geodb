@@ -171,20 +171,20 @@ public class PlaceControllerV2 extends AbstractJsonController {
         
         Point p = spatialConversionUtils.getJSONPoint(place);
         
-        if(place.isNull("_id")){
-            place.put("_id", idGen.genPoint("WL_",p));
+        if(place.isNull("if")){
+            place.put("if", idGen.genPoint("WL_",p));
         }
         
-        String id= place.getString("_id");
+        String id= place.getString("if");
         
         
         if(p != null && publisher != null){      
-            place.put("_id", id);
+            place.put("if", id);
             place.getJSONObject("properties").put("owner", "welocally");   
-            jsonDatabase.put(place, placesCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
+            jsonDatabase.put(place, null,  placesCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
             JSONObject userPlace = new JSONObject(place.toString());
-            userPlace.getJSONObject("properties").put("owner", publisher.get("_id"));            
-            jsonDatabase.put(userPlace, publisherPlacesCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
+            userPlace.getJSONObject("properties").put("owner", publisher.get("if"));            
+            jsonDatabase.put(userPlace, null,  publisherPlacesCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
             StringWriter sw = new StringWriter();
             //now add it to the index
             loader.loadSingle(place, 1, 1, sw, updateEndpoint);
@@ -273,20 +273,18 @@ public class PlaceControllerV2 extends AbstractJsonController {
         
         Point p = spatialConversionUtils.getJSONPoint(place);
         
-        if(place.isNull("_id")){
-            place.put("_id", idGen.genPoint("WL_",p));
+        if(place.isNull("if")){
+            place.put("if", idGen.genPoint("WL_",p));
         }
         
-        String id= place.getString("_id");
+        String id= place.getString("if");
         
         
         if(p != null && publisher != null){      
-            place.put("_id", id);
+            place.put("if", id);
             place.getJSONObject("properties").put("owner", "welocally");   
-            jsonDatabase.put(place, placesCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
-//            JSONObject userPlace = new JSONObject(place.toString());
-//            userPlace.getJSONObject("properties").put("owner", publisher.get("_id"));            
-//            jsonDatabase.put(userPlace, publisherPlacesCollection, id, JsonDatabase.EntityType.PLACE);
+            jsonDatabase.put(place, null,  placesCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
+
             StringWriter sw = new StringWriter();
             //now add it to the index
             loader.loadSingle(place, 1, 1, sw, updateEndpoint);
@@ -546,7 +544,7 @@ public class PlaceControllerV2 extends AbstractJsonController {
 			//get items from db 
 			for (int i = 0; i < resultIds.length(); i++) {
                 JSONObject id = resultIds.getJSONObject(i);
-                JSONObject place = jsonDatabase.findById(placesCollection, id.getString("_id"));
+                JSONObject place = jsonDatabase.findById(placesCollection, id.getString("if"));
                 
                 if(place != null){
                 	place.put("distance", id.getDouble("_dist_"));

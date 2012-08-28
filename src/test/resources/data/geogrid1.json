@@ -1,0 +1,41 @@
+{
+    "indexId": "https://spreadsheets.google.com/feeds/cells/0Avb_MOw4lfVndGt6TWYxWFp2bXM0TFlVNi1lejdZQUE/od6/private/full",
+    "schema": {
+        "properties": [
+            {
+                "name": "phone",
+                "searchable": true
+            },
+            {
+                "name": "address",
+                "searchable": true
+            },
+            {
+                "name": "province",
+                "searchable": true
+            },
+            {
+                "name": "postcode",
+                "searchable": false
+            }
+        ]
+    },
+    "records": [
+        {
+            "if": "A way to remember",
+            "properties":[ 
+            	{ "name":"phone","value": "+1 212 281 5812"},
+            	{ "name":"address","value": "657 Malcolm X Boulevard"},
+            	{ "name":"province","value": "NY"},
+            	{ "name":"postcode","value": "10037"}
+            ],
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -73.937514,
+                    40.819015
+                ]
+            }
+        }
+    ]
+}

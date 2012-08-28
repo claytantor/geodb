@@ -122,7 +122,7 @@ public class SolrCSVWriter implements CommandSupport {
 				String s = null; 
 				BufferedWriter writer = new BufferedWriter(new FileWriter(target));
 				CSVWriter csvWriter = new CSVWriter(writer);
-				writer.write("_id,search,location_0_coordinate,location_1_coordinate");
+				writer.write("if,search,location_0_coordinate,location_1_coordinate");
 				writer.newLine();
 				while((s = br.readLine()) != null) { 
 					
@@ -133,7 +133,7 @@ public class SolrCSVWriter implements CommandSupport {
 					welocallyJSONUtils.updatePlaceToWelocallyFormat(place);
 					JSONObject doc = welocallyJSONUtils.makeIndexablePlace(place);
 					csvWriter.writeNext(new String[] {
-						doc.getString("_id"),
+						doc.getString("if"),
 						doc.getString("search"),
 						doc.getString("location_0_coordinate"),
 						doc.getString("location_1_coordinate")});

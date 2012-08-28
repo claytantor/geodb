@@ -172,7 +172,7 @@ public class UserControllerV1 extends AbstractJsonController {
     
     private void createUser(JSONObject user,ModelAndView  mav) throws DbException, JSONException{
       //put it in the user store
-        jsonDatabase.put(user, usersCollection, user.getString("username"), JsonDatabase.EntityType.PUBLISHER, StatusType.PUBLISHED);
+        jsonDatabase.put(user, null, usersCollection, user.getString("username"), JsonDatabase.EntityType.PUBLISHER, StatusType.PUBLISHED);
         
         String mapping = "{" +
             "\"place\": {" +

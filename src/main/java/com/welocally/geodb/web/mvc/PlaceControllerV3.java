@@ -369,15 +369,15 @@ public class PlaceControllerV3 extends AbstractJsonController {
             
             Point p = spatialConversionUtils.getJSONPoint(place);
             
-            if(place.isNull("_id")){
-                place.put("_id", idGen.genPoint("WL_",p));
+            if(place.isNull("if")){
+                place.put("if", idGen.genPoint("WL_",p));
             }
             
-            String id= place.getString("_id");
+            String id= place.getString("if");
             
             
             if(p != null && publisher != null){      
-                place.put("_id", id);
+                place.put("if", id);
                 place.getJSONObject("properties").put("owner", publisher.get("username"));
                 savePlaceToUserStore(place, publisher, statusEnum, mav, req);
             }
@@ -623,18 +623,18 @@ public class PlaceControllerV3 extends AbstractJsonController {
         
         Point p = spatialConversionUtils.getJSONPoint(place);
         
-        if(place.isNull("_id")){
-            place.put("_id", idGen.genPoint("WL_",p));
+        if(place.isNull("if")){
+            place.put("if", idGen.genPoint("WL_",p));
         }
         
-        String id= place.getString("_id");
+        String id= place.getString("if");
               
         if(p != null && publisher != null){      
-            place.put("_id", id);
+            place.put("if", id);
             place.getJSONObject("properties").put("owner", "welocally");  
             
             //put it in the public store
-            jsonDatabase.put(place, placesCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
+            jsonDatabase.put(place, null, placesCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
             
             //put it in the public index            
             JSONObject placeIndex = welocallyJSONUtils.makeIndexablePlace(place);
@@ -682,18 +682,18 @@ public class PlaceControllerV3 extends AbstractJsonController {
         
         Point p = spatialConversionUtils.getJSONPoint(place);
         
-        if(place.isNull("_id")){
-            place.put("_id", idGen.genPoint("WL_",p));
+        if(place.isNull("if")){
+            place.put("if", idGen.genPoint("WL_",p));
         }
         
-        String id= place.getString("_id");
+        String id= place.getString("if");
               
         if(p != null && publisher != null){      
            
             //we need something that will see
             if(!place.isNull("public") && place.getBoolean("public")){
                 place.getJSONObject("properties").put("owner", "welocally");   
-                jsonDatabase.put(place, placesReviewCollection, id, JsonDatabase.EntityType.PLACE, status);
+                jsonDatabase.put(place, null, placesReviewCollection, id, JsonDatabase.EntityType.PLACE, status);
             }
             
             //make a compound document
@@ -710,7 +710,7 @@ public class PlaceControllerV3 extends AbstractJsonController {
             //make it indexable
             JSONObject userPlaceIndex = welocallyJSONUtils.makeIndexableUserData(userPlace, userData);
                        
-            jsonDatabase.put(userPlaceDataDocument, userPlacesCollection, id, JsonDatabase.EntityType.USER_PLACE, StatusType.PUBLISHED);
+            jsonDatabase.put(userPlaceDataDocument, null, userPlacesCollection, id, JsonDatabase.EntityType.USER_PLACE, StatusType.PUBLISHED);
                              
             IndexResponse response = transportClient.prepareIndex(publisher.getString("username"), "place", id)
             .setSource(XContentFactory.jsonBuilder()

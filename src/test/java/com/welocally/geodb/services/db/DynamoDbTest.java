@@ -80,7 +80,7 @@ public class DynamoDbTest {
 		try {
 	        JSONObject place = 
 	        	jsonDatabase.findById(placesCollection, "WL_3eQVMxQckdATyUVvLjulxo_64.881077_-147.798379@1293731153");
-	        Assert.assertEquals("WL_3eQVMxQckdATyUVvLjulxo_64.881077_-147.798379@1293731153", place.getString("_id"));
+	        Assert.assertEquals("WL_3eQVMxQckdATyUVvLjulxo_64.881077_-147.798379@1293731153", place.getString("if"));
 	        
 		} catch (DbException e) {
 	        Assert.fail("problem finding object");

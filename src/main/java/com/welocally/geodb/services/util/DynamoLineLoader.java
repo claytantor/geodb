@@ -74,8 +74,8 @@ public class DynamoLineLoader implements CommandSupport {
 					JSONObject doc = 
 						new JSONObject(s);
 					
-					logger.debug("adding document:"+doc.getString("_id"));
-					jsonDatabase.put(doc,collectionName, doc.getString("_id"), type, StatusType.PUBLISHED);
+					logger.debug("adding document:"+doc.getString("if"));
+					jsonDatabase.put(doc,null,collectionName, doc.getString("if"), type, StatusType.PUBLISHED);
 					loadMonitor.increment();
 			        count++;
 					

@@ -80,7 +80,7 @@ converted to
 
 [
     {
-        "_id": "WL_3Wnkj5RxX8iKzTR5qek2Fs_37.826065_-122.209171@1293134755",
+        "if": "WL_3Wnkj5RxX8iKzTR5qek2Fs_37.826065_-122.209171@1293134755",
         "properties": {
             "tags": [
                 "sandwich"
@@ -163,8 +163,8 @@ converted to
                                         
             place.put("type", "Place");
             
-            if(!placeQueryString.isNull("_id")){
-                place.put("_id", ((String[])placeQueryString.get("_id"))[0].toString());
+            if(!placeQueryString.isNull("if")){
+                place.put("if", ((String[])placeQueryString.get("if"))[0].toString());
             }
             
             if(!placeQueryString.isNull("owner")){
@@ -184,9 +184,9 @@ converted to
         
     }
 	
-	public Point getJSONPoint(JSONObject placeObject){
+	public Point getJSONPoint(JSONObject recordObject){
 		try {
-			JSONObject geom = placeObject.getJSONObject("geometry");
+			JSONObject geom = recordObject.getJSONObject("geometry");
 			JSONArray coords = geom.getJSONArray("coordinates");
 			Point coord = new Point(
 					Double.parseDouble(coords.getString(1)), Double

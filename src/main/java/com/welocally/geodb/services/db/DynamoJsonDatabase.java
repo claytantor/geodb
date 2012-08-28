@@ -85,7 +85,7 @@ public class DynamoJsonDatabase implements JsonDatabase {
     	    			 items.get("subcategory").getS().toString(),
     	    			 
     	    	 };
-    	    	 classifiers.put(items.get("_id").getS().toString(), row);	      
+    	    	 classifiers.put(items.get("if").getS().toString(), row);	      
             }
 		}
 	}
@@ -279,14 +279,14 @@ public class DynamoJsonDatabase implements JsonDatabase {
 	}
 
 
-	public void put(JSONObject doc, String collectionName, String id, EntityType type, StatusType status)
+	public void put(JSONObject doc, JSONObject schema, String collectionName, String id, EntityType type, StatusType status)
 	        throws DbException {
 
 		try {
 
 			switch(type){
 			case PLACE:{
-			    putItem(dynamoJsonObjectFactory.makePlace(doc, status.toString().toLowerCase()),
+			    putItem(dynamoJsonObjectFactory.makeRecord(doc, schema, id, status.toString().toLowerCase()),
                         collectionName);
 			    break;
 			}

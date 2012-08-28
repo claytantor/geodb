@@ -85,7 +85,7 @@ public class DealControllerV1 extends AbstractJsonController {
 //			Point p = spatialConversionUtils.getJSONPoint(deal);
 //			String id=idGen.genPoint("WL_",p);
 //			if(p != null){		
-//				deal.put("_id", id);
+//				deal.put("if", id);
 //				jsonDatabase.put(deal, placesCollection, id);
 //				StringWriter sw = new StringWriter();
 //				//now add it to the index
@@ -206,7 +206,7 @@ public class DealControllerV1 extends AbstractJsonController {
 			//get items from db 
 			for (int i = 0; i < resultIds.length(); i++) {
                 JSONObject id = resultIds.getJSONObject(i);
-                JSONObject place = jsonDatabase.findById(dealCollection, id.getString("_id"));
+                JSONObject place = jsonDatabase.findById(dealCollection, id.getString("if"));
                 
                 if(place != null){
                 	place.put("distance", id.getDouble("_dist_"));

@@ -39,7 +39,7 @@ object ESLoader {
       for (place <- places) {
         val placeIndex = makePlaceIndex(place)
       
-        val id:String = placeIndex.get("_id").asInstanceOf[String]
+        val id:String = placeIndex.get("if").asInstanceOf[String]
         bulkRequest.add(client.prepareIndex("geodb","place",id)
            .setSource(XContentFactory.jsonBuilder()
 	  	.startObject()

@@ -51,8 +51,8 @@ public class PublisherControllerV1 extends AbstractJsonController {
             for (int i = 0; i < publishers.length(); i++) {
                 JSONObject publisher = publishers.getJSONObject(i);
                 String id = publisher.getString("name");
-                publisher.put("_id", id);
-                jsonDatabase.put(publisher, publisherCollection, id,
+                publisher.put("if", id);
+                jsonDatabase.put(publisher, null, publisherCollection, id,
                         JsonDatabase.EntityType.PUBLISHER, StatusType.PUBLISHED);  
                 
                 Map<String, Object> result = new HashMap<String,Object>();

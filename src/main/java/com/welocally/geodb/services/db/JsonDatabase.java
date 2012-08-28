@@ -15,7 +15,7 @@ public interface JsonDatabase {
 	public JSONArray findUserPlaces(String publisherKey, String collectionName, String status) 
 	throws DbException;
 	
-	public void put(JSONObject doc, String collectionName, String id, EntityType type, StatusType status)
+	public void put(JSONObject doc, JSONObject schema, String collectionName, String id, EntityType type, StatusType status)
     throws DbException;
 
 	public void delete(String collectionName, String id)

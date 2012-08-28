@@ -79,7 +79,7 @@ public class SolrSearchService implements SpatialSearchService {
 	}
 	
 	//wt=json&fq={!geofilt%20sfield=location}&pt=58.37587201036513,-134.58542687818408&d=5&start=0&rows=10
-	//http://ec2-174-129-45-44.compute-1.amazonaws.com:8983/solr/select/?q=Art&version=2.2&start=0&rows=10&indent=on&wt=json&fq={!geofilt%20sfield=location}&pt=38.898748,-77.037684&d=5&sort=geodist(location)%20asc&fl=_id,_dist_:geodist(location)
+	//http://ec2-174-129-45-44.compute-1.amazonaws.com:8983/solr/select/?q=Art&version=2.2&start=0&rows=10&indent=on&wt=json&fq={!geofilt%20sfield=location}&pt=38.898748,-77.037684&d=5&sort=geodist(location)%20asc&fl=if,_dist_:geodist(location)
 	private NameValuePair[] makeQueryString(Point point, double km, String queryString, int start, int rows){
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 		pairs.add(new NameValuePair("q", queryString));
@@ -88,7 +88,7 @@ public class SolrSearchService implements SpatialSearchService {
 		pairs.add(new NameValuePair("pt", point.getLat()+","+point.getLon()));
 		pairs.add(new NameValuePair("d", ""+km));
 		pairs.add(new NameValuePair("sort", "geodist(location) asc"));
-		pairs.add(new NameValuePair("fl", "_id,_dist_:geodist(location)"));
+		pairs.add(new NameValuePair("fl", "if,_dist_:geodist(location)"));
 		pairs.add(new NameValuePair("start", ""+start));
 		pairs.add(new NameValuePair("rows", ""+rows));
 		
@@ -118,55 +118,55 @@ public class SolrSearchService implements SpatialSearchService {
         "start": 0,
         "docs": [
             {
-                "_id": "WL_7ZFwkbDdXSC2uudFhFFUP9_58.359826_-134.587981@1293731153",
+                "if": "WL_7ZFwkbDdXSC2uudFhFFUP9_58.359826_-134.587981@1293731153",
                 "search": "Alaska Graphic Arts Professional Art Services Services graphic designer ",
                 "location_1_coordinate": -134.587981,
                 "location_0_coordinate": 58.359826
             },
             {
-                "_id": "WL_7lDSzsQATgpYi5B4LYyCCw_58.382350_-134.637219@1293731153",
+                "if": "WL_7lDSzsQATgpYi5B4LYyCCw_58.382350_-134.637219@1293731153",
                 "search": "Gallery Art & Framing Shopping  Retail Goods art gallery dealer ",
                 "location_1_coordinate": -134.637219,
                 "location_0_coordinate": 58.38235
             },
             {
-                "_id": "WL_2u2M3U9FqnrRKQIBlWrXDh_58.360017_-134.573908@1293731153",
+                "if": "WL_2u2M3U9FqnrRKQIBlWrXDh_58.360017_-134.573908@1293731153",
                 "search": "Photographic Endeavors Professional Art Services Services photographer ",
                 "location_1_coordinate": -134.573908,
                 "location_0_coordinate": 58.360017
             },
             {
-                "_id": "WL_6j6qACIWhqcyi8VkXPgJGy_58.338559_-134.541280@1293731153",
+                "if": "WL_6j6qACIWhqcyi8VkXPgJGy_58.338559_-134.541280@1293731153",
                 "search": "Anderson Artworks Professional Art Services Services artist ",
                 "location_1_coordinate": -134.54128,
                 "location_0_coordinate": 58.338559
             },
             {
-                "_id": "WL_5g9F5sK1lN0ZsRm9aNpJxg_58.405909_-134.596797@1293731153",
+                "if": "WL_5g9F5sK1lN0ZsRm9aNpJxg_58.405909_-134.596797@1293731153",
                 "search": "Interdesign Professional Art Services Services graphic designer ",
                 "location_1_coordinate": -134.596797,
                 "location_0_coordinate": 58.405909
             },
             {
-                "_id": "WL_7IfZZNsBLKJ9XThlky0ciZ_58.363406_-134.577531@1293731153",
+                "if": "WL_7IfZZNsBLKJ9XThlky0ciZ_58.363406_-134.577531@1293731153",
                 "search": "Art Department Shopping  Retail Goods material artist supply ",
                 "location_1_coordinate": -134.577531,
                 "location_0_coordinate": 58.363406
             },
             {
-                "_id": "WL_1eZqCHwfBsplJTDcrmVqly_58.363406_-134.577531@1293731153",
+                "if": "WL_1eZqCHwfBsplJTDcrmVqly_58.363406_-134.577531@1293731153",
                 "search": "Southeast Artworks Shopping  Retail Goods art gallery dealer ",
                 "location_1_coordinate": -134.577531,
                 "location_0_coordinate": 58.363406
             },
             {
-                "_id": "WL_3vlABqEDkpdYssKuOhajlL_58.363506_-134.579814@1293731153",
+                "if": "WL_3vlABqEDkpdYssKuOhajlL_58.363506_-134.579814@1293731153",
                 "search": "Rie Munoz Gallery Shopping  Retail Goods art gallery dealer ",
                 "location_1_coordinate": -134.579814,
                 "location_0_coordinate": 58.363506
             },
             {
-                "_id": "WL_4p4Fv7fncXYDUyqTaQ1CqZ_58.399929_-134.557179@1293731153",
+                "if": "WL_4p4Fv7fncXYDUyqTaQ1CqZ_58.399929_-134.557179@1293731153",
                 "search": "S E Artwork Shopping  Retail Goods art gallery dealer ",
                 "location_1_coordinate": -134.557179,
                 "location_0_coordinate": 58.399929

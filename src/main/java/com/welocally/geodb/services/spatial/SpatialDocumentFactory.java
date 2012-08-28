@@ -1,5 +1,8 @@
 package com.welocally.geodb.services.spatial;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
@@ -11,6 +14,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static ch.lambdaj.Lambda.filter;
+
 
 import com.welocally.geodb.services.index.DocumentContentException;
 
@@ -40,8 +46,8 @@ public class SpatialDocumentFactory {
 		
 		Document doc = new Document();
 		
-		if(!placeObject.isNull("_id")){
-			doc.add(new Field("_id", placeObject.getString("_id"), Field.Store.YES,
+		if(!placeObject.isNull("if")){
+			doc.add(new Field("if", placeObject.getString("if"), Field.Store.YES,
 					Field.Index.NOT_ANALYZED));
 		}
 			
@@ -76,8 +82,8 @@ public class SpatialDocumentFactory {
 		
 		Document doc = new Document();
 		
-		if(!placeObject.isNull("_id")){
-			doc.add(new Field("_id", placeObject.getString("_id"), Field.Store.YES,
+		if(!placeObject.isNull("if")){
+			doc.add(new Field("if", placeObject.getString("if"), Field.Store.YES,
 					Field.Index.NOT_ANALYZED));
 		}
 			
@@ -104,6 +110,29 @@ public class SpatialDocumentFactory {
         }
            
         return buf.toString();  
+    }
+	
+	public String makeSearchableContent(JSONArray recordProperties, JSONObject schema) throws JSONException{
+	    
+	    StringBuffer buf = new StringBuffer();
+	    JSONArray schemaProperties = schema.getJSONArray("properties");
+	    
+	    //get searchable fields
+	    List<String> searchable = new ArrayList<String>();
+	    for (int i = 0; i < schemaProperties.length(); i++) 
+	        if(schemaProperties.getJSONObject(i).getBoolean("searchable"))
+	            searchable.add(schemaProperties.getJSONObject(i).getString("name"));
+	    
+	    for (int i = 0; i < recordProperties.length(); i++) {
+	        JSONObject nv = recordProperties.getJSONObject(i);
+	        if(searchable.contains(nv.getString("name"))){
+	            buf.append(nv.getString("value")+" ");
+	        }
+	    }
+	    
+	    return buf.toString().toLowerCase().trim();
+	    
+
     }
 	
 	public String makeSearchablePlaceContent(JSONObject placeProperties) throws JSONException{
@@ -136,15 +165,7 @@ public class SpatialDocumentFactory {
 	public String makeSearchableUserDataContent(JSONObject placeProperties, JSONObject userdata) throws JSONException{
         StringBuffer buf = new StringBuffer();
         buf.append(makeSearchablePlaceContent(placeProperties)+" ");
-        /*
-         * {
-         *  "data": [
-         *      {"name":"foo", "value":"bar"},
-         *      {"name":"roo", "value":"tar"}
-         *  ]
-         * }
-         * 
-         */
+
         JSONArray data = userdata.getJSONArray("data");
         for (int i = 0; i < data.length(); i++) {
             JSONObject nv = data.getJSONObject(i);

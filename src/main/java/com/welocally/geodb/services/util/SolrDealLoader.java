@@ -185,7 +185,7 @@ public class SolrDealLoader implements CommandSupport, JsonStoreLoader {
      * @see com.welocally.geodb.services.util.JsonStoreLoader#loadSingle(org.json.JSONObject, int, int, java.io.StringWriter)
      */
 	public void loadSingle(JSONObject deal, Integer count, Integer commitEvery, StringWriter sw, String endpoint) throws JSONException, IOException{
-		logger.debug("adding document:"+deal.getString("_id"));
+		logger.debug("adding document:"+deal.getString("if"));
 		
 		URL solrUrl = new URL(endpoint);
 		
