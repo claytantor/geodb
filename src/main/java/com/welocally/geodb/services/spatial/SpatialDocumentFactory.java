@@ -46,8 +46,8 @@ public class SpatialDocumentFactory {
 		
 		Document doc = new Document();
 		
-		if(!placeObject.isNull("if")){
-			doc.add(new Field("if", placeObject.getString("if"), Field.Store.YES,
+		if(!placeObject.isNull("id")){
+			doc.add(new Field("id", placeObject.getString("id"), Field.Store.YES,
 					Field.Index.NOT_ANALYZED));
 		}
 			
@@ -82,8 +82,8 @@ public class SpatialDocumentFactory {
 		
 		Document doc = new Document();
 		
-		if(!placeObject.isNull("if")){
-			doc.add(new Field("if", placeObject.getString("if"), Field.Store.YES,
+		if(!placeObject.isNull("id")){
+			doc.add(new Field("id", placeObject.getString("id"), Field.Store.YES,
 					Field.Index.NOT_ANALYZED));
 		}
 			

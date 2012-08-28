@@ -22,7 +22,7 @@
     },
     "records": [
         {
-            "if": "A way to remember",
+            "id": "A way to remember",
             "properties":[ 
             	{ "name":"phone","value": "+1 212 281 5812"},
             	{ "name":"address","value": "657 Malcolm X Boulevard"},

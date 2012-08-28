@@ -48,7 +48,7 @@ public class DynamoJsonObjectFactory {
         JSONObject geom = placeObject.getJSONObject("geometry");
         JSONArray coords = geom.getJSONArray("coordinates");
         
-        item.put("if", new AttributeValue(placeObject.getString("if")));
+        item.put("id", new AttributeValue(placeObject.getString("id")));
         item.put("lat", new AttributeValue().withN(coords.getString(1)));
         item.put("lng", new AttributeValue().withN(coords.getString(0)));
         item.put("search", new AttributeValue(spatialDocumentFactory.makeSearchableUserDataContent(properties, userData)));
@@ -62,7 +62,7 @@ public class DynamoJsonObjectFactory {
 	
 	public Map<String, AttributeValue> makeClassifier(JSONObject jsonObject) throws JSONException{
 		Map<String, AttributeValue> item = new HashMap<String, AttributeValue>();
-		item.put("if", new AttributeValue(jsonObject.getString("if")));
+		item.put("id", new AttributeValue(jsonObject.getString("id")));
 		item.put("type", new AttributeValue(jsonObject.getString("type")));
 		item.put("category", new AttributeValue(jsonObject.getString("category")));
 		if(!jsonObject.getString("subcategory").isEmpty())
@@ -83,7 +83,7 @@ public class DynamoJsonObjectFactory {
         coordsNew.put(new Double(location.getDouble("longitude")).toString());
 
         
-        item.put("if", new AttributeValue(jsonObject.getString("if")));
+        item.put("id", new AttributeValue(jsonObject.getString("id")));
         item.put("lat", new AttributeValue().withN(new Double(location.getDouble("latitude")).toString()));
         item.put("lng", new AttributeValue().withN(new Double(location.getDouble("longitude")).toString()));
         item.put("search", new AttributeValue(spatialDocumentFactory.makeSearchableDealContent(jsonObject)));
@@ -133,7 +133,7 @@ public class DynamoJsonObjectFactory {
 	 */
 	public Map<String, AttributeValue> makePublisher(JSONObject jsonObject, String status) throws JSONException{
         Map<String, AttributeValue> item = new HashMap<String, AttributeValue>();
-        item.put("if", new AttributeValue(jsonObject.getString("name")));
+        item.put("id", new AttributeValue(jsonObject.getString("name")));
         item.put("password", new AttributeValue(jsonObject.getString("password")));
         item.put("status", new AttributeValue(status));
         item.put("document", new AttributeValue(jsonObject.toString()));       

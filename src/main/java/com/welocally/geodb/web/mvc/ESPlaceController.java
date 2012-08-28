@@ -455,14 +455,14 @@ public class ESPlaceController extends AbstractJsonController {
         
         Point p = spatialConversionUtils.getJSONPoint(place);
         
-        if(place.isNull("if")){
-            place.put("if", idGen.genPoint("WL_",p));
+        if(place.isNull("id")){
+            place.put("id", idGen.genPoint("WL_",p));
         }
         
-        String id= place.getString("if");
+        String id= place.getString("id");
               
         if(p != null && publisher != null){      
-            place.put("if", id);
+            place.put("id", id);
             place.getJSONObject("properties").put("owner", "welocally");  
             
             //put it in the public store
@@ -508,11 +508,11 @@ public class ESPlaceController extends AbstractJsonController {
         
         Point p = spatialConversionUtils.getJSONPoint(place);
         
-        if(place.isNull("if")){
-            place.put("if", idGen.genPoint("WL_",p));
+        if(place.isNull("id")){
+            place.put("id", idGen.genPoint("WL_",p));
         }
         
-        String id= place.getString("if");
+        String id= place.getString("id");
               
         if(p != null && publisher != null){      
            

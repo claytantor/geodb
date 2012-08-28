@@ -155,7 +155,7 @@ public class SolrPlaceLoader implements CommandSupport, JsonStoreLoader {
      * @see com.welocally.geodb.services.util.JsonStoreLoader#loadSingle(org.json.JSONObject, int, int, java.io.StringWriter)
      */
 	public void loadSingle(JSONObject place, Integer count, Integer commitEvery, StringWriter sw, String endpoint) throws JSONException, IOException{
-		logger.debug("adding document:"+place.getString("if"));
+		logger.debug("adding document:"+place.getString("id"));
 
 		URL solrUrl = new URL(endpoint);
 		

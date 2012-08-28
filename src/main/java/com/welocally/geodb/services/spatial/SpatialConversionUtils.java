@@ -80,7 +80,7 @@ converted to
 
 [
     {
-        "if": "WL_3Wnkj5RxX8iKzTR5qek2Fs_37.826065_-122.209171@1293134755",
+        "id": "WL_3Wnkj5RxX8iKzTR5qek2Fs_37.826065_-122.209171@1293134755",
         "properties": {
             "tags": [
                 "sandwich"
@@ -163,8 +163,8 @@ converted to
                                         
             place.put("type", "Place");
             
-            if(!placeQueryString.isNull("if")){
-                place.put("if", ((String[])placeQueryString.get("if"))[0].toString());
+            if(!placeQueryString.isNull("id")){
+                place.put("id", ((String[])placeQueryString.get("id"))[0].toString());
             }
             
             if(!placeQueryString.isNull("owner")){

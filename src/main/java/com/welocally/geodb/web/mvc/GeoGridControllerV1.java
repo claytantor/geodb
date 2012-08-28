@@ -179,11 +179,11 @@ public class GeoGridControllerV1 extends AbstractJsonController {
                 Point p = 
                     spatialConversionUtils.getJSONPoint(rows.getJSONObject(i));
                 
-                if(row.isNull("if")){
-                    row.put("if", idGen.genPoint("WL_",p));
+                if(row.isNull("id")){
+                    row.put("id", idGen.genPoint("WL_",p));
                 }
                 
-                String id= row.getString("if");
+                String id= row.getString("id");
                       
                 if(p != null ){      
                      //make a compound document

@@ -80,7 +80,7 @@ public class DynamoArrayLoader implements CommandSupport {
 				for (int i = 0; i < docs.length(); i++) {
                     JSONObject doc = docs.getJSONObject(i);
                     jsonDatabase.put(doc,null, collectionName, 
-                            doc.getString("if"), type, StatusType.PUBLISHED);
+                            doc.getString("id"), type, StatusType.PUBLISHED);
                     loadMonitor.increment();
                    count++;
                 }

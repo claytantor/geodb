@@ -87,7 +87,7 @@ public class PlaceControllerV1 extends AbstractJsonController {
 			Point p = spatialConversionUtils.getJSONPoint(place);
 			String id=idGen.genPoint("WL_",p);
 			if(p != null){		
-				place.put("if", id);
+				place.put("id", id);
 				jsonDatabase.put(place, null, placesCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
 				jsonDatabase.put(place, null, userCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
 				StringWriter sw = new StringWriter();
@@ -160,15 +160,15 @@ public class PlaceControllerV1 extends AbstractJsonController {
             
             Point p = spatialConversionUtils.getJSONPoint(place);
             
-            if(place.isNull("if")){
-                place.put("if", idGen.genPoint("WL_",p));
+            if(place.isNull("id")){
+                place.put("id", idGen.genPoint("WL_",p));
             }
             
-            String id= place.getString("if");
+            String id= place.getString("id");
             
             
             if(p != null){      
-                place.put("if", id);
+                place.put("id", id);
                 jsonDatabase.put(place, null, placesCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
                 jsonDatabase.put(place, null, userCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
                 StringWriter sw = new StringWriter();
@@ -310,7 +310,7 @@ public class PlaceControllerV1 extends AbstractJsonController {
 			//get items from db 
 			for (int i = 0; i < resultIds.length(); i++) {
                 JSONObject id = resultIds.getJSONObject(i);
-                JSONObject place = jsonDatabase.findById(placesCollection, id.getString("if"));
+                JSONObject place = jsonDatabase.findById(placesCollection, id.getString("id"));
                 
                 if(place != null){
                 	place.put("distance", id.getDouble("_dist_"));

@@ -171,19 +171,19 @@ public class PlaceControllerV2 extends AbstractJsonController {
         
         Point p = spatialConversionUtils.getJSONPoint(place);
         
-        if(place.isNull("if")){
-            place.put("if", idGen.genPoint("WL_",p));
+        if(place.isNull("id")){
+            place.put("id", idGen.genPoint("WL_",p));
         }
         
-        String id= place.getString("if");
+        String id= place.getString("id");
         
         
         if(p != null && publisher != null){      
-            place.put("if", id);
+            place.put("id", id);
             place.getJSONObject("properties").put("owner", "welocally");   
             jsonDatabase.put(place, null,  placesCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
             JSONObject userPlace = new JSONObject(place.toString());
-            userPlace.getJSONObject("properties").put("owner", publisher.get("if"));            
+            userPlace.getJSONObject("properties").put("owner", publisher.get("id"));            
             jsonDatabase.put(userPlace, null,  publisherPlacesCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
             StringWriter sw = new StringWriter();
             //now add it to the index
@@ -273,15 +273,15 @@ public class PlaceControllerV2 extends AbstractJsonController {
         
         Point p = spatialConversionUtils.getJSONPoint(place);
         
-        if(place.isNull("if")){
-            place.put("if", idGen.genPoint("WL_",p));
+        if(place.isNull("id")){
+            place.put("id", idGen.genPoint("WL_",p));
         }
         
-        String id= place.getString("if");
+        String id= place.getString("id");
         
         
         if(p != null && publisher != null){      
-            place.put("if", id);
+            place.put("id", id);
             place.getJSONObject("properties").put("owner", "welocally");   
             jsonDatabase.put(place, null,  placesCollection, id, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
 
@@ -544,7 +544,7 @@ public class PlaceControllerV2 extends AbstractJsonController {
 			//get items from db 
 			for (int i = 0; i < resultIds.length(); i++) {
                 JSONObject id = resultIds.getJSONObject(i);
-                JSONObject place = jsonDatabase.findById(placesCollection, id.getString("if"));
+                JSONObject place = jsonDatabase.findById(placesCollection, id.getString("id"));
                 
                 if(place != null){
                 	place.put("distance", id.getDouble("_dist_"));

@@ -85,7 +85,7 @@ public class DynamoJsonDatabase implements JsonDatabase {
     	    			 items.get("subcategory").getS().toString(),
     	    			 
     	    	 };
-    	    	 classifiers.put(items.get("if").getS().toString(), row);	      
+    	    	 classifiers.put(items.get("id").getS().toString(), row);	      
             }
 		}
 	}

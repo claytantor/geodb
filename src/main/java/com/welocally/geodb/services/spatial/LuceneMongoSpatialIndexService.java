@@ -162,7 +162,7 @@ public class LuceneMongoSpatialIndexService implements SpatialIndexService,Comma
 //			// don't fail on a specific doc
 //			try {
 //				JSONObject place = page.getObjects().getJSONObject(i);
-//				logger.debug("writing place:"+place.getString("if"));
+//				logger.debug("writing place:"+place.getString("id"));
 //				writer.addDocument(
 //						spatialDocumentFactory.makePlaceDocument(place));	
 //				

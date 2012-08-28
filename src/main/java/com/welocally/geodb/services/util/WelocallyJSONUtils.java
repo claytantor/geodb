@@ -20,7 +20,7 @@ public class WelocallyJSONUtils {
 	@Autowired IdGen idGen; 
 	
 	public void updatePlaceToWelocallyFormat(JSONObject place) throws JSONException{
-		place.put("if", place.getString("id").replaceAll("SG_", "WL_"));
+		place.put("id", place.getString("id").replaceAll("SG_", "WL_"));
 		place.put("type", "Place");
 		place.remove("id");
 		JSONObject properties = place.getJSONObject("properties");
@@ -36,7 +36,7 @@ public class WelocallyJSONUtils {
 	            location.getDouble("latitude"),
 	            location.getDouble("longitude"));
 	    
-        deal.put("if", idGen.genPoint("WLD_",p));
+        deal.put("id", idGen.genPoint("WLD_",p));
 
     }
 	
@@ -54,7 +54,7 @@ public class WelocallyJSONUtils {
 		coordsNew.put(coords.getString(0));
 		
 		JSONObject newPlace = new JSONObject();
-		newPlace.put("if", placeObject.getString("if"));
+		newPlace.put("id", placeObject.getString("id"));
 		newPlace.put("search", spatialDocumentFactory.makeSearchablePlaceContent(properties));		
 		newPlace.put("location_0_coordinate",coord.getLat());
 		newPlace.put("location_1_coordinate",coord.getLon());
@@ -101,7 +101,7 @@ public class WelocallyJSONUtils {
         coordsNew.put(coords.getString(0));
         
         JSONObject newPlace = new JSONObject();
-        newPlace.put("if", placeObject.getString("if"));
+        newPlace.put("id", placeObject.getString("id"));
         newPlace.put("search", spatialDocumentFactory.makeSearchableUserDataContent(properties, userData));      
         newPlace.put("location_0_coordinate",coord.getLat());
         newPlace.put("location_1_coordinate",coord.getLon());
@@ -139,7 +139,7 @@ public class WelocallyJSONUtils {
 //        coordsNew.put(coords.getString(0));
 //        
 //        JSONObject newPlace = new JSONObject();
-//        newPlace.put("if", placeObject.getString("if"));
+//        newPlace.put("id", placeObject.getString("id"));
 //        newPlace.put("search", spatialDocumentFactory.makeSearchableUserDataContent(properties, userData));      
 //        newPlace.put("location_0_coordinate",coord.getLat());
 //        newPlace.put("location_1_coordinate",coord.getLon());
@@ -159,7 +159,7 @@ public class WelocallyJSONUtils {
         coordsNew.put(new Double(location.getDouble("longitude")).toString());
         
         JSONObject newDeal = new JSONObject();
-        newDeal.put("if", deal.getString("if"));
+        newDeal.put("id", deal.getString("id"));
         newDeal.put("search", spatialDocumentFactory.makeSearchableDealContent(deal));       
         newDeal.put("location_0_coordinate",location.getDouble("latitude"));
         newDeal.put("location_1_coordinate",location.getDouble("longitude"));

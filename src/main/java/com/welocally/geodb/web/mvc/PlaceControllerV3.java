@@ -369,15 +369,15 @@ public class PlaceControllerV3 extends AbstractJsonController {
             
             Point p = spatialConversionUtils.getJSONPoint(place);
             
-            if(place.isNull("if")){
-                place.put("if", idGen.genPoint("WL_",p));
+            if(place.isNull("id")){
+                place.put("id", idGen.genPoint("WL_",p));
             }
             
-            String id= place.getString("if");
+            String id= place.getString("id");
             
             
             if(p != null && publisher != null){      
-                place.put("if", id);
+                place.put("id", id);
                 place.getJSONObject("properties").put("owner", publisher.get("username"));
                 savePlaceToUserStore(place, publisher, statusEnum, mav, req);
             }
@@ -623,14 +623,14 @@ public class PlaceControllerV3 extends AbstractJsonController {
         
         Point p = spatialConversionUtils.getJSONPoint(place);
         
-        if(place.isNull("if")){
-            place.put("if", idGen.genPoint("WL_",p));
+        if(place.isNull("id")){
+            place.put("id", idGen.genPoint("WL_",p));
         }
         
-        String id= place.getString("if");
+        String id= place.getString("id");
               
         if(p != null && publisher != null){      
-            place.put("if", id);
+            place.put("id", id);
             place.getJSONObject("properties").put("owner", "welocally");  
             
             //put it in the public store
@@ -682,11 +682,11 @@ public class PlaceControllerV3 extends AbstractJsonController {
         
         Point p = spatialConversionUtils.getJSONPoint(place);
         
-        if(place.isNull("if")){
-            place.put("if", idGen.genPoint("WL_",p));
+        if(place.isNull("id")){
+            place.put("id", idGen.genPoint("WL_",p));
         }
         
-        String id= place.getString("if");
+        String id= place.getString("id");
               
         if(p != null && publisher != null){      
            

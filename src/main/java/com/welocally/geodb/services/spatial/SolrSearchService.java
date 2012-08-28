@@ -118,55 +118,55 @@ public class SolrSearchService implements SpatialSearchService {
         "start": 0,
         "docs": [
             {
-                "if": "WL_7ZFwkbDdXSC2uudFhFFUP9_58.359826_-134.587981@1293731153",
+                "id": "WL_7ZFwkbDdXSC2uudFhFFUP9_58.359826_-134.587981@1293731153",
                 "search": "Alaska Graphic Arts Professional Art Services Services graphic designer ",
                 "location_1_coordinate": -134.587981,
                 "location_0_coordinate": 58.359826
             },
             {
-                "if": "WL_7lDSzsQATgpYi5B4LYyCCw_58.382350_-134.637219@1293731153",
+                "id": "WL_7lDSzsQATgpYi5B4LYyCCw_58.382350_-134.637219@1293731153",
                 "search": "Gallery Art & Framing Shopping  Retail Goods art gallery dealer ",
                 "location_1_coordinate": -134.637219,
                 "location_0_coordinate": 58.38235
             },
             {
-                "if": "WL_2u2M3U9FqnrRKQIBlWrXDh_58.360017_-134.573908@1293731153",
+                "id": "WL_2u2M3U9FqnrRKQIBlWrXDh_58.360017_-134.573908@1293731153",
                 "search": "Photographic Endeavors Professional Art Services Services photographer ",
                 "location_1_coordinate": -134.573908,
                 "location_0_coordinate": 58.360017
             },
             {
-                "if": "WL_6j6qACIWhqcyi8VkXPgJGy_58.338559_-134.541280@1293731153",
+                "id": "WL_6j6qACIWhqcyi8VkXPgJGy_58.338559_-134.541280@1293731153",
                 "search": "Anderson Artworks Professional Art Services Services artist ",
                 "location_1_coordinate": -134.54128,
                 "location_0_coordinate": 58.338559
             },
             {
-                "if": "WL_5g9F5sK1lN0ZsRm9aNpJxg_58.405909_-134.596797@1293731153",
+                "id": "WL_5g9F5sK1lN0ZsRm9aNpJxg_58.405909_-134.596797@1293731153",
                 "search": "Interdesign Professional Art Services Services graphic designer ",
                 "location_1_coordinate": -134.596797,
                 "location_0_coordinate": 58.405909
             },
             {
-                "if": "WL_7IfZZNsBLKJ9XThlky0ciZ_58.363406_-134.577531@1293731153",
+                "id": "WL_7IfZZNsBLKJ9XThlky0ciZ_58.363406_-134.577531@1293731153",
                 "search": "Art Department Shopping  Retail Goods material artist supply ",
                 "location_1_coordinate": -134.577531,
                 "location_0_coordinate": 58.363406
             },
             {
-                "if": "WL_1eZqCHwfBsplJTDcrmVqly_58.363406_-134.577531@1293731153",
+                "id": "WL_1eZqCHwfBsplJTDcrmVqly_58.363406_-134.577531@1293731153",
                 "search": "Southeast Artworks Shopping  Retail Goods art gallery dealer ",
                 "location_1_coordinate": -134.577531,
                 "location_0_coordinate": 58.363406
             },
             {
-                "if": "WL_3vlABqEDkpdYssKuOhajlL_58.363506_-134.579814@1293731153",
+                "id": "WL_3vlABqEDkpdYssKuOhajlL_58.363506_-134.579814@1293731153",
                 "search": "Rie Munoz Gallery Shopping  Retail Goods art gallery dealer ",
                 "location_1_coordinate": -134.579814,
                 "location_0_coordinate": 58.363506
             },
             {
-                "if": "WL_4p4Fv7fncXYDUyqTaQ1CqZ_58.399929_-134.557179@1293731153",
+                "id": "WL_4p4Fv7fncXYDUyqTaQ1CqZ_58.399929_-134.557179@1293731153",
                 "search": "S E Artwork Shopping  Retail Goods art gallery dealer ",
                 "location_1_coordinate": -134.557179,
                 "location_0_coordinate": 58.399929
