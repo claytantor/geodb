@@ -296,122 +296,45 @@ public class GeoRecordsControllerV1 extends AbstractJsonController {
       mav.addObject("mapperResult", makeModelJson(result));
       
       return mav;
-  }   
+  }
+
+//creates an empty index
+@RequestMapping(value = "/update", method = RequestMethod.POST)
+public ModelAndView update(@RequestBody String requestJson, HttpServletRequest req) {           
+    //put it in the user store
+    ModelAndView  mav = new ModelAndView("mapper-result");
+
+    Map<String, Object> result = new HashMap<String,Object>();
+    try {
+        JSONObject model = 
+            new JSONObject(requestJson);
+        String indexId = new String(Base64.encodeBase64(model.getString("indexId").toString().getBytes())).toLowerCase();
+        
+        //now write the records to the index
+        writeRecordsToIndex(indexId, model.getJSONObject("data"), model.getJSONObject("schema"));
+        
+        //now write records to the store
+        writeRecordsToStore(model.getJSONObject("data"), model.getJSONObject("schema"));
+                
+        result.put("status", "SUCCEED");
+        
+    } catch (ElasticSearchException e) {           
+        logger.error("problem with create index", e);
+        result.put("message", e.getMessage());
+        result.put("acknowledged", false);
+        result.put("status", "FAIL");
+    } catch (JSONException e) {
+        logger.error("problem with create index", e);
+        result.put("message", e.getMessage());
+        result.put("acknowledged", false);
+        result.put("status", "FAIL");
+    } 
+                      
+    mav.addObject("mapperResult", makeModelJson(result));
     
-//    @RequestMapping(value = "/update", method = RequestMethod.POST)
-//    public ModelAndView update(
-//            @RequestBody String requestJson, 
-//            HttpServletRequest req) {
-//        
-//        ModelAndView  mav = new ModelAndView("mapper-result");
-//        
-//        Map<String, Object> result = new HashMap<String,Object>();
-//        try {
-//                      
-//            JSONObject grid = 
-//                new JSONObject(requestJson);
-//            
-//            //for each row
-//            JSONArray rows = grid.getJSONArray("rows");
-//            for (int i = 0; i < rows.length(); i++) {
-//                
-//                JSONObject row = rows.getJSONObject(i); 
-//                
-//                Point p = 
-//                    spatialConversionUtils.getJSONPoint(rows.getJSONObject(i));
-//                
-//                if(row.isNull("id")){
-//                    row.put("id", idGen.genPoint("WL_",p));
-//                }
-//                
-//                String id= row.getString("id");
-//                      
-//                if(p != null ){      
-//                     //make a compound document
-//                    JSONObject userPlaceDataDocument = new JSONObject();
-//                    userPlaceDataDocument.put("row", row);
-//                    
-//                    //user data OBSOLETE!
-//                    JSONObject userData = new JSONObject("{\"data\":[]}");
-//                    userPlaceDataDocument.put("userData", userData);
-//                              
-//                    //make it indexable
-//                    JSONObject userPlaceIndex = welocallyJSONUtils.makeIndexableUserData(row, userData);
-//                                                                  
-//                    IndexResponse response = transportClient.prepareIndex(grid.getString("key"), "row", id)
-//                    .setSource(XContentFactory.jsonBuilder()
-//                                .startObject()
-//                                .field("search", userPlaceIndex.get("search"))
-//                                .startArray("location")
-//                                .value(userPlaceIndex.get("location_1_coordinate"))
-//                                .value(userPlaceIndex.get("location_0_coordinate"))
-//                                .endArray()
-//                                .endObject())
-//                    .execute()
-//                    .actionGet();
-//                    
-//                }                
-//            }           
-//            result.put("status", "SUCCEED");
-//            
-//        } catch (ElasticSearchException e) {           
-//            logger.error("problem with create index", e);
-//            result.put("message", e.getMessage());
-//            result.put("acknowledged", false);
-//            result.put("status", "FAIL");
-//        } catch (JSONException e) {
-//            logger.error("problem with create index", e);
-//            result.put("message", e.getMessage());
-//            result.put("acknowledged", false);
-//            result.put("status", "FAIL");
-//        } catch (IOException e) {
-//            logger.error("problem with create index", e);
-//            result.put("message", e.getMessage());
-//            result.put("acknowledged", false);
-//            result.put("status", "FAIL");
-//        } 
-//                   
-//        
-//        mav.addObject("mapperResult", makeModelJson(result));
-//        
-//        
-//        return mav;
-//    }
-//    
-//    @RequestMapping(value = "/delete", method = RequestMethod.POST)
-//    public ModelAndView delete(@RequestBody String requestJson, HttpServletRequest req) {
-//        //put it in the user store
-//        ModelAndView  mav = new ModelAndView("mapper-result"); 
-//        
-//        Map<String, Object> result = new HashMap<String,Object>();
-//        DeleteIndexResponse response=null;
-//        try {
-//            JSONObject grid = 
-//                new JSONObject(requestJson);
-//            
-//            response = transportClient.admin().indices().delete( 
-//                                new DeleteIndexRequest(grid.getString("key"))).actionGet();
-//            
-//            result.put("acknowledged", response.acknowledged());
-//            result.put("status", "SUCCEED");
-//            
-//        } catch (ElasticSearchException e) {           
-//            logger.error("problem with create index", e);
-//            result.put("message", e.getMessage());
-//            result.put("acknowledged", false);
-//            result.put("status", "FAIL");
-//        } catch (JSONException e) {
-//            logger.error("problem with create index", e);
-//            result.put("message", e.getMessage());
-//            result.put("acknowledged", false);
-//            result.put("status", "FAIL");
-//        } 
-//                          
-//        mav.addObject("mapperResult", makeModelJson(result));
-//        
-//        return mav;
-//    }
-//    
+    return mav;
+}   
+        
 //    @RequestMapping(value = "/search", method = RequestMethod.GET)
 //    public ModelAndView search(
 //            @RequestParam String key,
