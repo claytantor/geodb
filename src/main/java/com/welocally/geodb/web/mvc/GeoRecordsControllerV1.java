@@ -14,6 +14,8 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
+import org.elasticsearch.action.admin.indices.exists.IndicesExistsRequest;
+import org.elasticsearch.action.admin.indices.exists.IndicesExistsResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
@@ -82,8 +84,7 @@ public class GeoRecordsControllerV1 extends AbstractJsonController {
     @Autowired WelocallyJSONUtils welocallyJSONUtils;
     
     TransportClient transportClient = null;
-    
-    
+       
     @PostConstruct
     public void initClient(){
         Settings settings = ImmutableSettings.settingsBuilder()
@@ -96,8 +97,8 @@ public class GeoRecordsControllerV1 extends AbstractJsonController {
     }
     
     //creates an empty index
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ModelAndView create(@RequestBody String requestJson, HttpServletRequest req) {
+    @RequestMapping(value = "/publish", method = RequestMethod.POST)
+    public ModelAndView publish(@RequestBody String requestJson, HttpServletRequest req) {
                
         //put it in the user store
         ModelAndView  mav = new ModelAndView("mapper-result");
@@ -117,27 +118,48 @@ public class GeoRecordsControllerV1 extends AbstractJsonController {
                 "}";     
         
         Map<String, Object> result = new HashMap<String,Object>();
-        CreateIndexResponse response=null;
+        CreateIndexResponse responseCreate=null;
+        IndicesExistsResponse responseExists=null;
+        Boolean ack = false;
         try {
             JSONObject model = 
                 new JSONObject(requestJson);
             
-            String indexId = new String(Base64.encodeBase64(model.getString("indexId").toString().getBytes())).toLowerCase();
+            //try to find the index
+            responseExists = transportClient.admin().indices().exists(
+                    new IndicesExistsRequest(model.getString("indexId"))                   
+                ).actionGet();
             
-            response = transportClient.admin().indices().create( 
-                                new CreateIndexRequest(indexId). 
-                                        mapping("record", mapping) 
-                        ).actionGet();
             
-            //now write the records to the index
-            writeRecordsToIndex(indexId, model.getJSONObject("data"), model.getJSONObject("schema"));
+            
+            
+            //if it doesnt exist create it
+            if(!responseExists.exists()){
+                responseCreate = transportClient.admin().indices().create( 
+                        new CreateIndexRequest(model.getString("indexId")). 
+                                mapping("record", mapping) 
+                ).actionGet();
+                ack = responseCreate.acknowledged();
+            } else {
+                ack = true;
+            }
+                                 
+            writeRecordsToIndex(
+                    model.getString("indexId"), 
+                    model.getJSONObject("data"), 
+                    model.getJSONObject("schema"));
             
             //now write records to the store
-            writeRecordsToStore(model.getJSONObject("data"), model.getJSONObject("schema"));
-            
-            
-            result.put("acknowledged", response.acknowledged());
+            writeRecordsToStore(
+                    model.getString("indexId"),
+                    model.getJSONObject("data"), 
+                    model.getJSONObject("schema"));
+                       
+            result.put("acknowledged", ack);
             result.put("status", "SUCCEED");
+            result.put("action", "create");
+            result.put("indexId", model.getString("indexId"));
+            
             
         } catch (ElasticSearchException e) {           
             logger.error("problem with create index", e);
@@ -165,14 +187,10 @@ public class GeoRecordsControllerV1 extends AbstractJsonController {
               for (int i = 0; i < records.length(); i++) {
                   
                   JSONObject record = records.getJSONObject(i); 
-                  String recordid = new String(Base64.encodeBase64(record.getString("id").toString().getBytes()));
-                  
-                  
+                  String recordid = indexId+"-"+new String(Base64.encodeBase64(record.getString("id").toString().getBytes()));
                   Point p = 
                       spatialConversionUtils.getJSONPoint(records.getJSONObject(i));
                                    
-                  //String recordid = record.getString("id");
-                        
                   if(p != null ){      
                        //make it indexable
                       JSONObject recordData = 
@@ -215,7 +233,7 @@ public class GeoRecordsControllerV1 extends AbstractJsonController {
           } 
     }
     
-    protected void writeRecordsToStore(JSONObject data, JSONObject schema) throws JSONException{
+    protected void writeRecordsToStore(String indexId, JSONObject data, JSONObject schema) throws JSONException{
         
         JSONArray records = data.getJSONArray("records");
         Map<String, Object> result = new HashMap<String,Object>();
@@ -223,7 +241,7 @@ public class GeoRecordsControllerV1 extends AbstractJsonController {
               for (int i = 0; i < records.length(); i++) {
                   
                   JSONObject record = records.getJSONObject(i); 
-                  writeRecordToStore( record, schema, recordsCollection);
+                  writeRecordToStore( indexId, record, schema, recordsCollection);
               }
         } catch (ElasticSearchException e) {           
             logger.error("problem with create index", e);
@@ -244,9 +262,9 @@ public class GeoRecordsControllerV1 extends AbstractJsonController {
         
     }
     
-    protected void writeRecordToStore(JSONObject record,JSONObject schema, String storeCollectionName) throws DbException {
+    protected void writeRecordToStore(String indexId,JSONObject record,JSONObject schema, String storeCollectionName) throws DbException {
         try {                  
-            String recordid = new String(Base64.encodeBase64(record.getString("id").toString().getBytes()));           
+            String recordid = indexId+"-"+new String(Base64.encodeBase64(record.getString("id").toString().getBytes()));
             logger.debug("adding document:"+recordid);
             jsonDatabase.put(record, schema, storeCollectionName, recordid, JsonDatabase.EntityType.PLACE, StatusType.PUBLISHED);
                
@@ -267,14 +285,16 @@ public class GeoRecordsControllerV1 extends AbstractJsonController {
           JSONObject model = 
               new JSONObject(requestJson);
           
-          String indexId = new String(Base64.encodeBase64(model.getString("indexId").toString().getBytes())).toLowerCase();
+          //String indexId = new String(Base64.encodeBase64(model.getString("indexId").toString().getBytes())).toLowerCase();
           
           
           response = transportClient.admin().indices().delete( 
-                              new DeleteIndexRequest(indexId)).actionGet();
+                              new DeleteIndexRequest(model.getString("indexId"))).actionGet();
           
           result.put("acknowledged", response.acknowledged());
           result.put("status", "SUCCEED");
+          result.put("action", "delete");
+          result.put("indexId", model.getString("indexId"));
           
       } catch (ElasticSearchException e) {           
           logger.error("problem with delete index", e);
