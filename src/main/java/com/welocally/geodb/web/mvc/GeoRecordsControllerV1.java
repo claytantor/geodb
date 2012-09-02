@@ -354,13 +354,18 @@ public class GeoRecordsControllerV1 extends AbstractJsonController {
                   .point(Double.parseDouble(parts[0]), Double.parseDouble(parts[1]))
                   .distance(radiusKm, DistanceUnit.KILOMETERS));
           
-          SearchResponse response = transportClient.prepareSearch(indexId).setTypes("row").
+          SearchResponse response = transportClient.prepareSearch(indexId).setTypes("record").
           setQuery(searchQuery).execute().actionGet();
           
           JSONArray results = new JSONArray();
           for (SearchHit hit: response.getHits()) {
               String id = hit.getId();
-              results.put(id);
+              JSONObject record = jsonDatabase.findById(recordsCollection, id);
+              
+              if(record != null){
+                  results.put(record);
+              }
+
           }
                           
           mav.addObject(
