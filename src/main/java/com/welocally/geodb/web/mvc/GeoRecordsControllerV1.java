@@ -1,5 +1,9 @@
 package com.welocally.geodb.web.mvc;
 
+import static org.elasticsearch.index.query.FilterBuilders.geoDistanceFilter;
+import static org.elasticsearch.index.query.QueryBuilders.filteredQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termQuery;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +12,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.elasticsearch.ElasticSearchException;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
@@ -17,12 +22,15 @@ import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.exists.IndicesExistsResponse;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.indices.IndexMissingException;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.search.SearchHit;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +41,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.welocally.geodb.services.db.DbException;
@@ -284,9 +293,7 @@ public class GeoRecordsControllerV1 extends AbstractJsonController {
       try {
           JSONObject model = 
               new JSONObject(requestJson);
-          
-          //String indexId = new String(Base64.encodeBase64(model.getString("indexId").toString().getBytes())).toLowerCase();
-          
+                    
           
           response = transportClient.admin().indices().delete( 
                               new DeleteIndexRequest(model.getString("indexId"))).actionGet();
@@ -318,92 +325,56 @@ public class GeoRecordsControllerV1 extends AbstractJsonController {
       return mav;
   }
 
-//creates an empty index
-@RequestMapping(value = "/update", method = RequestMethod.POST)
-public ModelAndView update(@RequestBody String requestJson, HttpServletRequest req) {           
-    //put it in the user store
-    ModelAndView  mav = new ModelAndView("mapper-result");
+  @RequestMapping(value = "/search", method = RequestMethod.GET)
+  public ModelAndView search(
+          @RequestParam String indexId,
+          @RequestParam String q, 
+          @RequestParam String loc,  
+          @RequestParam Double radiusKm, 
+          @RequestParam(required=false) String callback, 
+          HttpServletRequest req){
+      
+      ModelAndView mav = null;
+      if(StringUtils.isEmpty(callback))
+          mav = new ModelAndView("mapper-result");
+      else {
+          mav = new ModelAndView("jsonp-mapper-result");
+          mav.addObject(
+                  "callback", 
+                  callback);
+      }
+              
+      try {
+                     
+          String[] parts = loc.split("_");
 
-    Map<String, Object> result = new HashMap<String,Object>();
-    try {
-        JSONObject model = 
-            new JSONObject(requestJson);
-        String indexId = new String(Base64.encodeBase64(model.getString("indexId").toString().getBytes())).toLowerCase();
-        
-        //now write the records to the index
-        writeRecordsToIndex(indexId, model.getJSONObject("data"), model.getJSONObject("schema"));
-        
-        //now write records to the store
-        writeRecordsToStore(model.getJSONObject("data"), model.getJSONObject("schema"));
-                
-        result.put("status", "SUCCEED");
-        
-    } catch (ElasticSearchException e) {           
-        logger.error("problem with create index", e);
-        result.put("message", e.getMessage());
-        result.put("acknowledged", false);
-        result.put("status", "FAIL");
-    } catch (JSONException e) {
-        logger.error("problem with create index", e);
-        result.put("message", e.getMessage());
-        result.put("acknowledged", false);
-        result.put("status", "FAIL");
-    } 
-                      
-    mav.addObject("mapperResult", makeModelJson(result));
-    
-    return mav;
-}   
-        
-//    @RequestMapping(value = "/search", method = RequestMethod.GET)
-//    public ModelAndView search(
-//            @RequestParam String key,
-//            @RequestParam String q, 
-//            @RequestParam String loc,  
-//            @RequestParam Double radiusKm, 
-//            @RequestParam(required=false) String callback, 
-//            HttpServletRequest req){
-//        
-//        ModelAndView mav = null;
-//        if(StringUtils.isEmpty(callback))
-//            mav = new ModelAndView("mapper-result");
-//        else {
-//            mav = new ModelAndView("jsonp-mapper-result");
-//            mav.addObject(
-//                    "callback", 
-//                    callback);
-//        }
-//                
-//        try {
-//                       
-//            String[] parts = loc.split("_");
-//
-//            QueryBuilder searchQuery = filteredQuery(
-//                    termQuery("search", q.toLowerCase()),
-//                    geoDistanceFilter("location")
-//                    .point(Double.parseDouble(parts[0]), Double.parseDouble(parts[1]))
-//                    .distance(radiusKm, DistanceUnit.KILOMETERS));
-//            
-//            SearchResponse response = transportClient.prepareSearch(key).setTypes("row").
-//            setQuery(searchQuery).execute().actionGet();
-//            
-//            JSONArray results = new JSONArray();
-//            for (SearchHit hit: response.getHits()) {
-//                String id = hit.getId();
-//                results.put(id);
-//            }
-//                            
-//            mav.addObject(
-//                    "mapperResult", 
-//                    results.toString());
-//                    
-//        } 
-//        catch (Exception e) {
-//            logger.error("could not get results",e);
-//            mav.addObject("mapperResult", makeErrorsJson(e));
-//        }   
-//            
-//        return mav;
-//    }   
+          QueryBuilder searchQuery = filteredQuery(
+                  termQuery("search", q.toLowerCase()),
+                  geoDistanceFilter("location")
+                  .point(Double.parseDouble(parts[0]), Double.parseDouble(parts[1]))
+                  .distance(radiusKm, DistanceUnit.KILOMETERS));
+          
+          SearchResponse response = transportClient.prepareSearch(indexId).setTypes("row").
+          setQuery(searchQuery).execute().actionGet();
+          
+          JSONArray results = new JSONArray();
+          for (SearchHit hit: response.getHits()) {
+              String id = hit.getId();
+              results.put(id);
+          }
+                          
+          mav.addObject(
+                  "mapperResult", 
+                  results.toString());
+                  
+      } 
+      catch (Exception e) {
+          logger.error("could not get results",e);
+          mav.addObject("mapperResult", makeErrorsJson(e));
+      }   
+          
+      return mav;
+  }   
+ 
 
 }
