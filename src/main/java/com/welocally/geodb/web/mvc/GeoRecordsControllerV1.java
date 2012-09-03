@@ -31,6 +31,9 @@ import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.GeoDistanceSortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -348,23 +351,34 @@ public class GeoRecordsControllerV1 extends AbstractJsonController {
                      
           String[] parts = loc.split("_");
 
+          double lat = Double.parseDouble(parts[0]);
+          double lon = Double.parseDouble(parts[1]);
+          SortBuilder sort = SortBuilders.geoDistanceSort("location").point(lat, lon);
+          
           QueryBuilder searchQuery = filteredQuery(
                   termQuery("search", q.toLowerCase()),
-                  geoDistanceFilter("location")
-                  .point(Double.parseDouble(parts[0]), Double.parseDouble(parts[1]))
+                  geoDistanceFilter("location")                  
+                  .point(lat, lon)
                   .distance(radiusKm, DistanceUnit.KILOMETERS));
-          
-          SearchResponse response = transportClient.prepareSearch(indexId).setTypes("record").
-          setQuery(searchQuery).execute().actionGet();
+        
+			SearchResponse response = transportClient.prepareSearch(indexId)
+					.setTypes("record")
+					.addScriptField("distance", "doc['location'].arcDistanceInKm(" + lat+","+lon +")")
+					.setQuery(searchQuery)
+					.addSort(sort)
+					.execute().actionGet();
           
           JSONArray results = new JSONArray();
           for (SearchHit hit: response.getHits()) {
               String id = hit.getId();
               JSONObject record = jsonDatabase.findById(recordsCollection, id);
               
-              if(record != null){
-                  results.put(record);
-              }
+				if (record != null) {
+					Double distance = (Double) hit.getFields().get("distance")
+							.getValue();
+					record.put("geoDistance", distance);
+					results.put(record);
+				}
 
           }
                           
