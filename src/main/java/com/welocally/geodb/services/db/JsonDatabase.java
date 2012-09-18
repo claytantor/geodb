@@ -5,7 +5,7 @@ import org.json.JSONObject;
 
 public interface JsonDatabase {
     
-    public enum EntityType { PLACE, USER_PLACE, CLASSIFER, DEAL, PUBLISHER };
+    public enum EntityType { PLACE, USER_PLACE, CLASSIFER, DEAL, PUBLISHER, DOCUMENT };
     
     public enum StatusType { PUBLISHED, INCOMPLETE, REVIEW };
 

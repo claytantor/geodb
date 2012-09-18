@@ -22,6 +22,22 @@ public class DynamoJsonObjectFactory {
 	@Autowired SpatialDocumentFactory spatialDocumentFactory;
 	
 	
+	/**
+	 * Search and Setting config objects both have the same dynamo-level schema.  Just a JSON document
+	 * with an id field.
+	 * 
+	 * @param jsonObject
+	 * @return
+	 * @throws JSONException
+	 */
+	public Map<String, AttributeValue> makeDocument(JSONObject jsonObject) throws JSONException{
+		
+		Map<String, AttributeValue> item = new HashMap<String, AttributeValue>();		
+		item.put("id", new AttributeValue(jsonObject.getString("id")));
+		item.put("document", new AttributeValue(jsonObject.toString()));		
+        return item;
+	}
+
 	public Map<String, AttributeValue> makeRecord(JSONObject recordObject, JSONObject schema, String id, String status) throws JSONException{
 		
 		Map<String, AttributeValue> item = new HashMap<String, AttributeValue>();

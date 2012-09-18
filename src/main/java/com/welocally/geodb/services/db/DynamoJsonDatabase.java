@@ -312,7 +312,11 @@ public class DynamoJsonDatabase implements JsonDatabase {
                 putItem(dynamoJsonObjectFactory.makePublisher(doc, status.toString().toLowerCase()),
                         collectionName);
                 break;
-            }            
+            }
+			case DOCUMENT: {
+				putItem(dynamoJsonObjectFactory.makeDocument(doc),
+						collectionName);
+			}
 			}
             
 			
